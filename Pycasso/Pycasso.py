@@ -1,11 +1,10 @@
 from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
-#using tinydb for pycasso v.0.0.1
-from tinydb import TinyDB, Query
 from Pycasso.Enumerations.Job_Type import Job_Type as JobType
 from Pycasso.Enumerations.Job_Status import Job_Status as JobStatus
 from Pycasso.Core.Job_Repository import Job_Repository
 from Pycasso.Core.Neural_Transfer import Neural_Transfer
+from datetime import datetime
 
 app = Flask(__name__)
 api = Api(app)
@@ -40,11 +39,11 @@ class Job(Resource):
         # job definition sample:
         # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImXCrop : XCropSize, ImYCrop: YCropSize}
         Initial_Status = JobStatus.Queued
-        Converted_Type = Job_Type(args['Type'])
+        Converted_Type = JobType(args['Type'])
         Job_Start = datetime.datetime.now()
-        if Converted_Type == Job_Type.Neural_Transfer:
+        if Converted_Type == JobType.Neural_Transfer:
             return 'Job Queued', 200
-        elif Converted_Type == Job_Type.GAN:
+        elif Converted_Type == JobType.GAN:
             return 'Not Supported Yet', 400
 
     #Terminates a job on Pycasso
@@ -53,11 +52,9 @@ class Job(Resource):
         job_repo = Job_Repository(Repo_Path)
         job_repo.terminate_job(job_id)
         return 'Job Terminated', 200
-        
 ##
 ## Actually setup the Api resource routing here
 ##
-
 api.add_resource(Version, '/version')
 api.add_resource(Job, '/job')
 
