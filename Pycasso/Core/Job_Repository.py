@@ -1,3 +1,7 @@
+from tinydb import TinyDB, Query
+
+#using tinydb for pycasso v.0.0.1
+
 class Job_Repository:
     def __init__(self, file_path):
         self.file_path = file_path

@@ -44,8 +44,7 @@ class Job(Resource):
         Job_Start = datetime.datetime.now()
         if Converted_Type == Job_Type.Neural_Transfer:
             return 'Job Queued', 200
-        
-        else if Converted_Type == Job_Type.GAN:
+        elif Converted_Type == Job_Type.GAN:
             return 'Not Supported Yet', 400
 
     #Terminates a job on Pycasso
