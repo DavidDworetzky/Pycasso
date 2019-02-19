@@ -37,14 +37,27 @@ class Job(Resource):
         job_repo = Job_Repository(Repo_Path)
         args = parser.parse_args()
         # job definition sample:
-        # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImXCrop : XCropSize, ImYCrop: YCropSize}
+        # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize}
+
+        #variable initialization
         Initial_Status = JobStatus.Queued
         Converted_Type = JobType(args['Type'])
         Job_Start = datetime.datetime.now()
+        Crop_Size = args['ImCrop']
+        Source_Image = args['Source_Image']
+        Target_Image = args['Target_Image']
+        #job execution
         if Converted_Type == JobType.Neural_Transfer:
-            return 'Job Queued', 200
+            #Source Image is the Content Image, and Target_Image is the style image
+            Job_Data = [Source_Image, Target_Image]
+            job_out = job_repo.queue_job({'name': 'Neural_Transfer', 'create_date': Job_Start, 'data': Job_Data})
+            Neural_Transfer = Neural_Transfer(Crop_Size, Source_Image, Target_Image)
+            #run a 600 step transfer to begin
+            output = Neural_Transfer.run_transfer(600)
+            job_repo.
+            return output, 200
         elif Converted_Type == JobType.GAN:
-            return 'Not Supported Yet', 400
+            return 'GAN Not Supported Yet', 400
 
     #Terminates a job on Pycasso
     def delete(self, job_id):

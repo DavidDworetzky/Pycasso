@@ -8,12 +8,16 @@ def terminate_job_tinydb(job_id):
         new_doc = doc
         new_doc.status = JobStatus.Terminated
         return transform
+def complete_job_tinydb(job_id):
+    def transform(doc):
+        new_doc = doc
+        new_doc.status = JobStatus.Completed
+        return transform
 
 class Job_Repository:
     def __init__(self, file_path):
         self.file_path = file_path
         self.db = TinyDB(self.file_path)
-
 
     #takes a job request object and inserts it into our database
     def queue_job(self, job):
