@@ -54,7 +54,7 @@ class Job(Resource):
             Neural_Transfer = Neural_Transfer(Crop_Size, Source_Image, Target_Image)
             #run a 600 step transfer to begin
             output = Neural_Transfer.run_transfer(600)
-            job_repo.
+            job_repo.complete_job(job_out['id'])
             return output, 200
         elif Converted_Type == JobType.GAN:
             return 'GAN Not Supported Yet', 400

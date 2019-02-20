@@ -29,6 +29,9 @@ class Job_Repository:
         Job = Query()
         self.db.Update(terminate_job_tinydb(job_id), Job.id == job_id)
         return True
+    def complete_job(self, job_id):
+        Job = Query()
+        self.db.Update(complete_job_tinydb(job_id), Job.id == job_id)
     def get_status(self, job_id):
         Job = Query()
         #query tinyDB for a job matching job_id
