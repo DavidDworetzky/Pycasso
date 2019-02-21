@@ -40,7 +40,6 @@ class Job(Resource):
         # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize}
 
         #variable initialization
-        Initial_Status = JobStatus.Queued
         Converted_Type = JobType(args['Type'])
         Job_Start = datetime.datetime.now()
         Crop_Size = args['ImCrop']
