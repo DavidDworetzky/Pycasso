@@ -2,8 +2,8 @@ from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
 from Pycasso.Enumerations.Job_Type import Job_Type as JobType
 from Pycasso.Enumerations.Job_Status import Job_Status as JobStatus
-from Pycasso.Core.Job_Repository import Job_Repository
-from Pycasso.Core.Neural_Transfer import Neural_Transfer
+from Pycasso.Core.Job_Repository import *
+from Pycasso.Core.Neural_Transfer import *
 from datetime import datetime
 
 app = Flask(__name__)
