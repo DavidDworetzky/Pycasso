@@ -14,7 +14,7 @@ API_VERSIONS = {
     '0.0.1': '0.0.1'
 }
 
-Repo_Path = ''
+Repo_Path = 'jobs.json'
 
 parser = reqparse.RequestParser()
 parser.add_argument('task')
