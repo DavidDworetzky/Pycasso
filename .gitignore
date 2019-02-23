@@ -3,3 +3,5 @@ pycasso.egg-info
 Pycasso/Core/__pycache__/
 Pycasso/Enumerations/__pycache__/
 Pycasso/__pycache__/
+
+.vscode
