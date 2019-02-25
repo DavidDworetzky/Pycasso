@@ -21,6 +21,7 @@ setuptools.setup(
 	install_requires=[
           'tinydb',
 		  'torch',
-		  'torchvision'
+		  'torchvision',
+          'requests'
     ],
 )

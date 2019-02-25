@@ -2,7 +2,7 @@ import requests
 import base64
 
 def make_version_call():
-    url = 'http://localhost/version'
+    url = 'http://localhost:5000/version'
     response = requests.get(url)
     return response
 
@@ -12,7 +12,7 @@ def queue_job(content_path, style_path):
     # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize}
     # Source Image is content
     # Target Image is style
-    url = 'http://localhost/job'
+    url = 'http://localhost:5000/job'
     # get content image
     with open(content_path, "rb") as image:
         f = image.read()
@@ -35,4 +35,9 @@ def queue_job(content_path, style_path):
     #returns job id and image
     return response
 
-queue_job("data/guitarist.jpg", "data/singingbutler.jpg")
+print('Making version call')
+version = make_version_call()
+print(f'api version is : {version}')
+
+print('Queueing image job')
+output = queue_job("data/guitarist.jpg", "data/singingbutler.jpg")
