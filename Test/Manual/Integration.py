@@ -37,7 +37,9 @@ def queue_job(content_path, style_path):
 
 print('Making version call')
 version = make_version_call()
-print(f'api version is : {version}')
+print(f'api version is : {version.text}')
+print(f'status code of response is: {version.status_code}')
 
 print('Queueing image job')
 output = queue_job("data/guitarist.jpg", "data/singingbutler.jpg")
+print(f'status code of response is: {output.status_code}')
