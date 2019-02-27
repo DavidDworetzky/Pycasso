@@ -1,5 +1,6 @@
 import requests
 import base64
+import os
 
 def make_version_call():
     url = 'http://localhost:5000/version'
@@ -31,6 +32,7 @@ def queue_job(content_path, style_path):
             "Target_Image" : {content},
             "ImCrop" : {imcrop}
         }'''
+    print(f'posting data to {url} to queue job')
     response = requests.post(url, data=data)
     #returns job id and image
     return response
@@ -40,6 +42,9 @@ version = make_version_call()
 print(f'api version is : {version.text}')
 print(f'status code of response is: {version.status_code}')
 
+wd = os.getcwd()
+guitarist =  os.path.join(wd, "data\\guitarist.jpg")
+singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
 print('Queueing image job')
-output = queue_job("data/guitarist.jpg", "data/singingbutler.jpg")
+output = queue_job(guitarist, singing_butler)
 print(f'status code of response is: {output.status_code}')
