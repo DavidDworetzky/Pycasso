@@ -1,6 +1,18 @@
 from tinydb import TinyDB, Query
-from Pycasso.Enumerations.Job_Status import Job_Status as JobStatus
 import uuid
+
+from enum import Enum
+class JobStatus(Enum):
+     Queued = 1
+     Running = 2
+     Terminated = 3
+     Completed = 4
+JobStatusMapping = {
+    JobStatus.Queued : 1,
+    JobStatus.Running : 2,
+    JobStatus.Terminated : 3,
+    JobStatus.Completed: 4
+}
 
 #using tinydb for pycasso v.0.0.1
 def terminate_job_tinydb(job_id):
@@ -22,7 +34,10 @@ class Job_Repository:
     #takes a job request object and inserts it into our database
     def queue_job(self, job):
         job_id = uuid.uuid4()
-        job = {'name' : job.name, 'id': job_id, 'create_date': job.create_date, 'status': JobStatus.Queued, 'data': job.data}
+        job_id_string = str(job_id)
+        create_date_string = str(job['create_date'])
+        job_status_int = JobStatusMapping[JobStatus.Queued]
+        job = {'name' : job['name'], 'id': job_id_string, 'create_date': create_date_string, 'status': job_status_int, 'data': job['data']}
         self.db.insert(job)
         return job
     def terminate_job(self, job_id):

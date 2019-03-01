@@ -3,8 +3,8 @@ from flask_restful import reqparse, abort, Api, Resource
 from Pycasso.Enumerations.Job_Type import Job_Type as JobType
 from Pycasso.Enumerations.Job_Status import Job_Status as JobStatus
 from Pycasso.Core.Job_Repository import *
-from Pycasso.Core.Neural_Transfer import *
-from datetime import datetime
+from Pycasso.Core.Neural_Transfer import Neural_Transfer as NT
+import datetime
 
 app = Flask(__name__)
 api = Api(app)
@@ -47,7 +47,7 @@ class Job(Resource):
             #Source Image is the Content Image, and Target_Image is the style image
             Job_Data = [Source_Image, Target_Image]
             job_out = job_repo.queue_job({'name': 'Neural_Transfer', 'create_date': Job_Start, 'data': Job_Data})
-            Neural_Transfer = Neural_Transfer(Crop_Size, Source_Image, Target_Image)
+            Neural_Transfer = NT(Crop_Size, Source_Image, Target_Image)
             #run a 600 step transfer to begin
             output = Neural_Transfer.run_transfer(600)
             job_repo.complete_job(job_out['id'])
