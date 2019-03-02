@@ -8,6 +8,7 @@ import torchvision.models as models
 from io import BytesIO
 import base64
 import copy
+import uuid
 
 #CONSTANTS
 # desired depth layers to compute style/content losses :
@@ -16,9 +17,15 @@ style_layers_default = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
 
 #Helper functions for image processing -> loading
 def image_loader(image_data, loader, device):
-    data = {}
-    data['image'] = image_data
-    image = Image.open(BytesIO(base64.b64decode(data)))
+    decoded = base64.b64decode(image_data)
+    #create temp file for processing
+    temp_name = str(uuid.uuid4())
+    #only jpg encoding supported for now
+    with open(f"{temp_name}.jpg", 'wb') as f:
+        f.write(decoded)
+    b = BytesIO(decoded)
+    b.seek(0)
+    image = Image.open(f"{temp_name}.jpg")
     # fake batch dimension required to fit network's input dimensions
     image = loader(image).unsqueeze(0)
     return image.to(device, torch.float)

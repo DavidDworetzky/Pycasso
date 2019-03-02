@@ -13,9 +13,12 @@ api = Api(app)
 API_VERSIONS = {
     '0.0.1': '0.0.1'
 }
+def Process_Json_Arg(string):
+    #Removes leading b on string
+    return string[1:]
+
 
 Repo_Path = 'jobs.json'
-
 #api versions
 class Version(Resource):
     def get(self):
@@ -40,8 +43,9 @@ class Job(Resource):
         Converted_Type = JobType(args['Job_Type'])
         Job_Start = datetime.datetime.now()
         Crop_Size = args['ImCrop']
-        Source_Image = args['Source_Image']
-        Target_Image = args['Target_Image']
+        Source_Image = Process_Json_Arg(args['Source_Image'])
+        Target_Image = Process_Json_Arg(args['Target_Image'])
+        print(Source_Image)
         #job execution
         if Converted_Type == JobType.Neural_Transfer:
             #Source Image is the Content Image, and Target_Image is the style image
