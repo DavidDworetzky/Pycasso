@@ -16,16 +16,17 @@ content_layers_default = ['conv_4']
 style_layers_default = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
 
 #Helper functions for image processing -> loading
-def image_loader(image_data, loader, device):
+def image_loader(image_data, loader, device, debug=True):
     decoded = base64.b64decode(image_data)
     #create temp file for processing
     temp_name = str(uuid.uuid4())
-    #only jpg encoding supported for now
-    with open(f"{temp_name}.jpg", 'wb') as f:
-        f.write(decoded)
+    #if debug flag, write out image to directory
+    if(debug):
+        with open(f"{temp_name}.jpg", 'wb') as f:
+            f.write(decoded)
     b = BytesIO(decoded)
     b.seek(0)
-    image = Image.open(f"{temp_name}.jpg")
+    image = Image.open(b)
     # fake batch dimension required to fit network's input dimensions
     image = loader(image).unsqueeze(0)
     return image.to(device, torch.float)
@@ -187,20 +188,21 @@ class Normalization(nn.Module):
         return (img - self.mean) / self.std
 
 class Neural_Transfer:
-    def __init__(self, image_size, content_image, style_image):
+    def __init__(self, image_size, content_image, style_image, debug=True):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.image_size = image_size
+        self.debug = debug
         # scale imported image and transform it into a torch tensor
         self.loader = transforms.Compose([transforms.Resize((self.image_size, self.image_size)), transforms.ToTensor()])
         #initialize style and content image 
-        self.style_image = image_loader(style_image, self.loader, self.device)
-        self.content_image = image_loader(content_image, self.loader, self.device)
+        self.style_image = image_loader(style_image, self.loader, self.device, self.debug)
+        self.content_image = image_loader(content_image, self.loader, self.device, self.debug)
         self.cnn_normalization_mean = torch.tensor([0.485, 0.456, 0.406]).to(self.device)
         self.cnn_normalization_std = torch.tensor([0.229, 0.224, 0.225]).to(self.device)
         self.cnn = models.vgg19(pretrained=True).features.to(self.device).eval()
         
     def run_transfer(self, num_steps):
         input_image = self.content_image.clone()
-        output = run_style_transfer(self.cnn, self.cnn_normalization_mean, self.cnn_normalization_std, 
+        output = run_style_transfer(self.cnn, self.cnn_normalization_mean, self.cnn_normalization_std,
         self.content_image, self.style_image, input_image, self.device, num_steps = num_steps)
         return output
