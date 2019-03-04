@@ -205,4 +205,10 @@ class Neural_Transfer:
         input_image = self.content_image.clone()
         output = run_style_transfer(self.cnn, self.cnn_normalization_mean, self.cnn_normalization_std,
         self.content_image, self.style_image, input_image, self.device, num_steps = num_steps)
-        return output
+
+        #after we run the output, now we need to reconstitute it as a PIL image
+        unloader = transforms.ToPILImage()  # reconvert into PIL image
+        image = output.cpu().clone()  # we clone the tensor to not do changes on it
+        image = image.squeeze(0)      # remove the fake batch dimension
+        image = unloader(image)
+        return image

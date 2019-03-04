@@ -18,13 +18,13 @@ JobStatusMapping = {
 def terminate_job_tinydb(job_id):
     def transform(doc):
         new_doc = doc
-        new_doc.status = JobStatus.Terminated
-        return transform
+        new_doc.status = JobStatusMapping[JobStatus.Terminated]
+    return transform
 def complete_job_tinydb(job_id):
     def transform(doc):
         new_doc = doc
-        new_doc.status = JobStatus.Completed
-        return transform
+        new_doc.status = JobStatusMapping[JobStatus.Completed]
+    return transform
 
 class Job_Repository:
     def __init__(self, file_path):
