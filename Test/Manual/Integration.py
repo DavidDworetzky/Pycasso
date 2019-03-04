@@ -34,7 +34,7 @@ def queue_job(content_path, style_path):
         style = base64.encodebytes(b)
     job_type = 1
     imcrop = 500
-    data = f'{{"Job_Type" : {job_type},"Source_Image" : "{style}","Target_Image" : "{content}","ImCrop" : {imcrop}}}'
+    data = f'{{"Job_Type" : {job_type},"Source_Image" : "{content}","Target_Image" : "{style}","ImCrop" : {imcrop}}}'
     is_valid_json = is_json(data)
     print(f'data is json: {is_valid_json}')
     print(f'posting data to {url} to queue job')
