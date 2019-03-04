@@ -45,7 +45,6 @@ class Job(Resource):
         Crop_Size = args['ImCrop']
         Source_Image = Process_Json_Arg(args['Source_Image'])
         Target_Image = Process_Json_Arg(args['Target_Image'])
-        print(Source_Image)
         #job execution
         if Converted_Type == JobType.Neural_Transfer:
             #Source Image is the Content Image, and Target_Image is the style image
