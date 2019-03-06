@@ -8,6 +8,7 @@ import datetime
 from PIL import Image
 from io import BytesIO
 import base64
+import os
 
 app = Flask(__name__)
 api = Api(app)
@@ -16,6 +17,9 @@ api = Api(app)
 API_VERSIONS = {
     '0.0.1': '0.0.1'
 }
+
+wd = os.getcwd()
+
 def Process_Json_Arg(string):
     #Removes leading b on string
     return string[1:]
@@ -26,7 +30,7 @@ def Convert_Output_To_Base64(image_output):
     img_str = base64.b64encode(buffered.getvalue())
     return img_str
 
-Repo_Path = 'jobs.json'
+Repo_Path = os.path.join(wd, 'jobs.json')
 #api versions
 class Version(Resource):
     def get(self):
@@ -43,17 +47,13 @@ class Job(Resource):
         job_id = args['id']
         #now return job status query
         job_repo = Job_Repository(Repo_Path)
-        if job_id != -1:
+        if job_id != '-1':
             status = job_repo.get_status(job_id)
             return status, 200
         else:
             statuses = job_repo.get_all_statuses()
-            return statuses, 200
-
-    def get_all(self):
-        job_repo = Job_Repository(Repo_Path)
-        statuses = job_repo.get_all_status()
-        return statuses, 200
+            statuses_summary = [{'name': x['name'], 'id': x['id'], 'create_date': x['create_date'], 'status': x['status']} for x in statuses]
+            return statuses_summary, 200
 
     #Starts a job on Pycasso
     def post(self):
@@ -73,14 +73,12 @@ class Job(Resource):
             #Source Image is the Content Image, and Target_Image is the style image
             Job_Data = [Source_Image, Target_Image]
             job_out = job_repo.queue_job({'name': 'Neural_Transfer', 'create_date': Job_Start, 'data': Job_Data})
-            print(job_out['id'])
             Neural_Transfer = NT(Crop_Size, Source_Image, Target_Image)
             #run a 600 step transfer to begin
             output = Neural_Transfer.run_transfer(600)
             job_repo.complete_job(job_out['id'])
             output_str = Convert_Output_To_Base64(output)
             decoded = output_str.decode('utf-8')
-            print(output_str)
             return decoded, 200
         elif Converted_Type == JobType.GAN:
             return 'GAN Not Supported Yet', 400

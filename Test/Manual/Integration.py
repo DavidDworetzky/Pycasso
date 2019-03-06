@@ -51,6 +51,15 @@ version = make_version_call()
 print(f'api version is : {version.text}')
 print(f'status code of response is: {version.status_code}')
 
+wd = os.getcwd()
+guitarist =  os.path.join(wd, "data\\guitarist.jpg")
+singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
+print('Queueing image job')
+output = queue_job(guitarist, singing_butler)
+print(f'status code of response is: {output.status_code}')
+print('output content')
+print(output.text)
+
 print('Making statuses call')
 statuses = -1
 statuses_output = make_statuses_call(statuses)
@@ -58,11 +67,3 @@ print(f'status code of response is: {statuses_output.status_code} ')
 print('statuses are:')
 print(statuses_output.text)
 
-'''wd = os.getcwd()
-guitarist =  os.path.join(wd, "data\\guitarist.jpg")
-singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
-print('Queueing image job')
-output = queue_job(guitarist, singing_butler)
-print(f'status code of response is: {output.status_code}')
-print('output content')
-print(output.text)'''
