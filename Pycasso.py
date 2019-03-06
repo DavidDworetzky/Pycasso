@@ -15,7 +15,7 @@ api = Api(app)
 
 #Static definitions
 API_VERSIONS = {
-    '0.0.1': '0.0.1'
+    '0.0.2': '0.0.2'
 }
 
 wd = os.getcwd()
@@ -34,7 +34,7 @@ Repo_Path = os.path.join(wd, 'jobs.json')
 #api versions
 class Version(Resource):
     def get(self):
-        return API_VERSIONS['0.0.1']
+        return API_VERSIONS['0.0.2']
 
 #Jobs are requests to initiate training a model or processing a pycasso job
 class Job(Resource):

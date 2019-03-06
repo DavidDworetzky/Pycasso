@@ -1,5 +1,6 @@
 from tinydb import TinyDB, Query
 import uuid
+from tinydb.operations import set
 
 from enum import Enum
 class JobStatus(Enum):
@@ -17,13 +18,14 @@ JobStatusMapping = {
 #using tinydb for pycasso v.0.0.1
 def terminate_job_tinydb(job_id):
     def transform(doc):
-        new_doc = doc
-        new_doc.status = JobStatusMapping[JobStatus.Terminated]
+        doc['status'] = JobStatusMapping[JobStatus.Terminated]
+        return doc
     return transform
 def complete_job_tinydb(job_id):
     def transform(doc):
-        new_doc = doc
-        new_doc.status = JobStatusMapping[JobStatus.Completed]
+        doc['status'] = JobStatusMapping[JobStatus.Completed]
+        return doc
+        
     return transform
 
 class Job_Repository:
