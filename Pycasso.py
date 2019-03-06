@@ -84,7 +84,11 @@ class Job(Resource):
             return 'GAN Not Supported Yet', 400
 
     #Terminates a job on Pycasso
-    def delete(self, job_id):
+    def delete(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', type=str)
+        args = parser.parse_args()
+        job_id = args['id']
         #invoke terminate on the job repository
         job_repo = Job_Repository(Repo_Path)
         job_repo.terminate_job(job_id)
