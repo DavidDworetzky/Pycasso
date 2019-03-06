@@ -7,6 +7,10 @@ def make_version_call():
     url = 'http://localhost:5000/version'
     response = requests.get(url)
     return response
+def make_statuses_call(job_id):
+    url = f'http://localhost:5000/job?id={job_id}'
+    response = requests.get(url)
+    return response
 
 def is_json(myjson):
   try:
@@ -47,9 +51,18 @@ version = make_version_call()
 print(f'api version is : {version.text}')
 print(f'status code of response is: {version.status_code}')
 
-wd = os.getcwd()
+print('Making statuses call')
+statuses = -1
+statuses_output = make_statuses_call(statuses)
+print(f'status code of response is: {statuses_output.status_code} ')
+print('statuses are:')
+print(statuses_output.text)
+
+'''wd = os.getcwd()
 guitarist =  os.path.join(wd, "data\\guitarist.jpg")
 singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
 print('Queueing image job')
 output = queue_job(guitarist, singing_butler)
 print(f'status code of response is: {output.status_code}')
+print('output content')
+print(output.text)'''

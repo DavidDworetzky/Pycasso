@@ -52,3 +52,7 @@ class Job_Repository:
         #query tinyDB for a job matching job_id
         result = self.db.search(Job.id == job_id)
         return result
+    def get_all_statuses(self):
+        #query all jobs
+        result = self.db.all()
+        return result
