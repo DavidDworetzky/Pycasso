@@ -52,7 +52,7 @@ class Job(Resource):
             return status, 200
         else:
             statuses = job_repo.get_all_statuses()
-            statuses_summary = [{'name': x['name'], 'id': x['id'], 'create_date': x['create_date'], 'status': x['status']} for x in statuses]
+            statuses_summary = [{'name': x['name'], 'id': x['id'], 'create_date': x['create_date'], 'status': x['status'], 'end_date': x.get('end_date', '')} for x in statuses]
             return statuses_summary, 200
 
     #Starts a job on Pycasso

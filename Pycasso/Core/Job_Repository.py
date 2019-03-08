@@ -1,6 +1,7 @@
 from tinydb import TinyDB, Query
 import uuid
 from tinydb.operations import set
+import datetime
 
 from enum import Enum
 class JobStatus(Enum):
@@ -19,11 +20,15 @@ JobStatusMapping = {
 def terminate_job_tinydb(job_id):
     def transform(doc):
         doc['status'] = JobStatusMapping[JobStatus.Terminated]
+        job_end = datetime.datetime.now()
+        doc['end_date'] = str(job_end)
         return doc
     return transform
 def complete_job_tinydb(job_id):
     def transform(doc):
         doc['status'] = JobStatusMapping[JobStatus.Completed]
+        job_end = datetime.datetime.now()
+        doc['end_date'] = str(job_end)
         return doc
         
     return transform
@@ -39,7 +44,7 @@ class Job_Repository:
         job_id_string = str(job_id)
         create_date_string = str(job['create_date'])
         job_status_int = JobStatusMapping[JobStatus.Queued]
-        job = {'name' : job['name'], 'id': job_id_string, 'create_date': create_date_string, 'status': job_status_int, 'data': job['data']}
+        job = {'name' : job['name'], 'id': job_id_string, 'create_date': create_date_string, 'status': job_status_int, 'data': job['data'], 'end_date': ''}
         self.db.insert(job)
         return job
     def terminate_job(self, job_id):
