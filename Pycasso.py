@@ -17,7 +17,7 @@ api = Api(app)
 API_VERSIONS = {
     '0.0.2': '0.0.2'
 }
-
+#get current directory for relative paths
 wd = os.getcwd()
 
 def Process_Json_Arg(string):
