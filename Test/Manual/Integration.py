@@ -2,6 +2,17 @@ import requests
 import base64
 import os
 import json
+from datetime import datetime
+
+default_format = '%Y-%m-%d %H:%M:%S'
+
+#Status response data object
+class Status_Response:
+  def __init__(self, start_date, end_date, id, status):
+    self.start_date = start_date
+    self.end_date = end_date
+    self.id = id
+    self.status = status
 
 def make_version_call():
     url = 'http://localhost:5000/version'
@@ -11,7 +22,30 @@ def make_statuses_call(job_id):
     url = f'http://localhost:5000/job?id={job_id}'
     response = requests.get(url)
     return response
-
+def strip_datetime_fraction(time_string):
+  return time_string.split('.')[0]
+def format_statuses_response(text):
+  statuses_array = json.loads(text)
+  statuses = []
+  for response in statuses_array:
+    start = response['create_date']
+    end = response['end_date']
+    #format dates
+    start_date = datetime.strptime(strip_datetime_fraction(start), default_format) if start != '' else datetime.now()
+    end_date = datetime.strptime(strip_datetime_fraction(end), default_format) if end != '' else datetime.now()
+    #get id
+    id = response['id']
+    #get statuses
+    status = response['status']
+    statuses.append(Status_Response(start_date, end_date, id, status))
+  return statuses
+def print_statuses_response(statuses):
+  for status in statuses:
+    print(status.start_date)
+    print(status.end_date)
+    print(status.id)
+    print(status.status)
+    print(f'total calltime: {status.end_date - status.start_date}')
 def is_json(myjson):
   try:
     json_object = json.loads(myjson)
@@ -66,4 +100,7 @@ statuses_output = make_statuses_call(statuses)
 print(f'status code of response is: {statuses_output.status_code} ')
 print('statuses are:')
 print(statuses_output.text)
+statuses = format_statuses_response(statuses_output.text)
+print_statuses_response(statuses)
+
 
