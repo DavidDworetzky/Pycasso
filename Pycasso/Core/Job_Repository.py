@@ -2,8 +2,8 @@ from tinydb import TinyDB, Query
 import uuid
 from tinydb.operations import set
 import datetime
-
 from enum import Enum
+
 class JobStatus(Enum):
      Queued = 1
      Running = 2
