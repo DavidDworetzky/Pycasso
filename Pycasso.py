@@ -3,6 +3,7 @@ from flask_restful import reqparse, abort, Api, Resource
 from Pycasso.Enumerations.Job_Type import Job_Type as JobType
 from Pycasso.Enumerations.Job_Status import Job_Status as JobStatus
 from Pycasso.Core.Job_Repository import *
+from Pycasso.Core.User_Repository import *
 from Pycasso.Core.Neural_Transfer import Neural_Transfer as NT
 import datetime
 from PIL import Image
@@ -15,7 +16,7 @@ api = Api(app)
 
 #Static definitions
 API_VERSIONS = {
-    '0.0.2': '0.0.2'
+    '0.0.3': '0.0.3'
 }
 #get current directory for relative paths
 wd = os.getcwd()
@@ -31,10 +32,45 @@ def Convert_Output_To_Base64(image_output):
     return img_str
 
 Repo_Path = os.path.join(wd, 'jobs.json')
+Users_Repo_Path = os.path.join(wd, 'users.json')
 #api versions
 class Version(Resource):
     def get(self):
-        return API_VERSIONS['0.0.2']
+        return API_VERSIONS['0.0.3']
+
+class User(Resource):
+    #returns a list of users
+    def get(self):
+        user_repo = User_Repository(Users_Repo_Path)
+        parser = reqparse.RequestParser()
+        args = parser.parse_args()
+        user_id = args['id']
+        if user_id != '-1':
+            user = user_repo.get_user(user_id)
+            return user, 200
+        else:
+            users = user_repo.get_all_users()
+            return users, 200
+
+    #creates a new user in pycasso
+    def post(self):
+        user_repo = User_Repository(Users_Repo_Path)
+        args = request.get_json(force=True)
+        #variable initialization
+        First = args['First']
+        Last = args['Last']
+        Email = args['Email']
+        Password = args['Password']
+        user = user_repo.create_user({'first': First, 'last': Last, 'email': Email, 'password': Password})
+        return user, 200
+    #deletes a user in pycasso
+    def delete(self):
+        parser = reqparse.RequestParser()
+        args = parser.parse_args()
+        user_id = args['id']
+        user_repo = User_Repository(Users_Repo_Path)
+        user_repo.delete(user_id)
+        return 'User Deleted', 200
 
 #Jobs are requests to initiate training a model or processing a pycasso job
 class Job(Resource):
@@ -82,6 +118,8 @@ class Job(Resource):
             return decoded, 200
         elif Converted_Type == JobType.GAN:
             return 'GAN Not Supported Yet', 400
+        else:
+            return 'Type Not Supported Yet', 400
 
     #Terminates a job on Pycasso
     def delete(self):
@@ -98,6 +136,7 @@ class Job(Resource):
 ##
 api.add_resource(Version, '/version')
 api.add_resource(Job, '/job')
+api.add_resource(User, '/user')
 
 
 if __name__ == '__main__':
