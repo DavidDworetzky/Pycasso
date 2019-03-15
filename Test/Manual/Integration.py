@@ -80,6 +80,20 @@ def queue_job(content_path, style_path):
     #returns job id and image
     return response
 
+def create_user():
+  url = 'http://localhost:5000/job'
+  first = 'David'
+  last = 'Dworetzky'
+  email = 'fake@email.com'
+  password = 'fakepassword'
+  data = f'{{"First": "{first}", "Last": "{last}", "Email" : "{email}", "Password" : "{password}"}}'
+  is_valid_json = is_json(data)
+  print(f'data is json: {is_valid_json}')
+  print(f'posting data to {url} to create user')
+  response = requests.post(url, data=data)
+  #returns user object
+  return response
+
 print('Making version call')
 version = make_version_call()
 print(f'api version is : {version.text}')
@@ -102,5 +116,15 @@ print('statuses are:')
 print(statuses_output.text)
 statuses = format_statuses_response(statuses_output.text)
 print_statuses_response(statuses)
+
+#users
+
+print('Making create users call')
+user_output = create_user()
+print(f'status code of response is: {user_output.status_code} ')
+print('user is:')
+print(user_output.text)
+
+
 
 
