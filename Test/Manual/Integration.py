@@ -81,7 +81,7 @@ def queue_job(content_path, style_path):
     return response
 
 def create_user():
-  url = 'http://localhost:5000/job'
+  url = 'http://localhost:5000/user'
   first = 'David'
   last = 'Dworetzky'
   email = 'fake@email.com'
