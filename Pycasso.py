@@ -43,6 +43,7 @@ class User(Resource):
     def get(self):
         user_repo = User_Repository(Users_Repo_Path)
         parser = reqparse.RequestParser()
+        parser.add_argument('id', type=str)
         args = parser.parse_args()
         user_id = args['id']
         if user_id != '-1':
@@ -67,6 +68,7 @@ class User(Resource):
     def delete(self):
         parser = reqparse.RequestParser()
         args = parser.parse_args()
+        parser.add_argument('id', type=str)
         user_id = args['id']
         user_repo = User_Repository(Users_Repo_Path)
         user_repo.delete(user_id)

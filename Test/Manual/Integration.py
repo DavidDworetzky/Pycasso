@@ -18,12 +18,15 @@ def make_version_call():
     url = 'http://localhost:5000/version'
     response = requests.get(url)
     return response
+
 def make_statuses_call(job_id):
     url = f'http://localhost:5000/job?id={job_id}'
     response = requests.get(url)
     return response
+
 def strip_datetime_fraction(time_string):
   return time_string.split('.')[0]
+
 def format_statuses_response(text):
   statuses_array = json.loads(text)
   statuses = []
@@ -39,6 +42,7 @@ def format_statuses_response(text):
     status = response['status']
     statuses.append(Status_Response(start_date, end_date, id, status))
   return statuses
+
 def print_statuses_response(statuses):
   for status in statuses:
     print(status.start_date)
@@ -46,6 +50,7 @@ def print_statuses_response(statuses):
     print(status.id)
     print(status.status)
     print(f'total calltime: {status.end_date - status.start_date}')
+
 def is_json(myjson):
   try:
     json_object = json.loads(myjson)
@@ -94,6 +99,12 @@ def create_user():
   #returns user object
   return response
 
+def get_users(user_id):
+  url = f'http://localhost:5000/user?id={user_id}'
+  response = requests.get(url)
+  return response
+
+
 print('Making version call')
 version = make_version_call()
 print(f'api version is : {version.text}')
@@ -124,6 +135,13 @@ user_output = create_user()
 print(f'status code of response is: {user_output.status_code} ')
 print('user is:')
 print(user_output.text)
+
+print('Getting users')
+users_output = get_users(-1)
+print(f'users code of response is: {users_output.status_code}')
+print('users are:')
+print(users_output.text)
+
 
 
 
