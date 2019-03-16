@@ -13,7 +13,8 @@ class User_Repository:
     def create_user(self, user):
         user_id = uuid.uuid4()
         user_id_string = str(user_id)
-        create_date_string = str(user['create_date'])
+        create_date = datetime.datetime.now()
+        create_date_string = str(create_date)
         user = {'first' : user['first'], 'last' : user['last'], 'id': user_id_string, 'create_date': create_date_string}
         self.db.insert(user)
         return user
