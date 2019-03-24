@@ -1,4 +1,7 @@
 import unittest
+import sys
+sys.path.append("..")
+sys.path.append("..\..")
 from Pycasso.Core.Password_Manager import Password_Manager as PM
 
 #Fixtures
@@ -24,4 +27,7 @@ class TestPasswordManager(unittest.TestCase):
         self.assertTrue(hash != "")
         #assert hash verification
         self.assertTrue(manager.sha512_verify(TEST_PASSWORD, hash))
+
+if __name__ == '__main__':
+    unittest.main()
         
