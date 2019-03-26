@@ -11,7 +11,9 @@ class Password_Manager:
         self.rounds = rounds
 
     def sha512_hash(self,password):
-        return hashlib.sha512(self.salt + password).hexdigest()
+        to_hash = self.salt + password
+        to_hash = to_hash.encode('utf-8')
+        return hashlib.sha512(to_hash).hexdigest()
 
     #verifies a hashed password
     def sha512_verify(self,password, hash):
