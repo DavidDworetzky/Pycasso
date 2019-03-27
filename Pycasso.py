@@ -16,7 +16,7 @@ api = Api(app)
 
 #Static definitions
 API_VERSIONS = {
-    '0.0.3': '0.0.3'
+    '0.0.4': '0.0.4'
 }
 #get current directory for relative paths
 wd = os.getcwd()
@@ -36,7 +36,8 @@ Users_Repo_Path = os.path.join(wd, 'users.json')
 #api versions
 class Version(Resource):
     def get(self):
-        return API_VERSIONS['0.0.3']
+        return API_VERSIONS['0.0.4']
+
 
 class User(Resource):
     #returns a list of users
