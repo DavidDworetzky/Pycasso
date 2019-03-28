@@ -89,15 +89,28 @@ def create_user():
   url = 'http://localhost:5000/user'
   first = 'David'
   last = 'Dworetzky'
+  name = 'Ddworetzky'
   email = 'fake@email.com'
   password = 'fakepassword'
-  data = f'{{"First": "{first}", "Last": "{last}", "Email" : "{email}", "Password" : "{password}"}}'
+  data = f'{{"First": "{first}", "Last": "{last}", "Name": "{name}", "Email" : "{email}", "Password" : "{password}"}}'
   is_valid_json = is_json(data)
   print(f'data is json: {is_valid_json}')
   print(f'posting data to {url} to create user')
   response = requests.post(url, data=data)
   #returns user object
   return response
+def login():
+  url = "http://localhost:5000/login"
+  name = 'Ddworetzky'
+  password = 'fakepassword'
+  data = f'{{"Name" : "{name}", "Password": "{password}"}}'
+  is_valid_json = is_json(data)
+  print(f'data is json: {is_valid_json}')
+  print(f'posting data to {url} to login')
+  response = requests.post(url, data=data)
+  #returns login response
+  return response
+  
 
 def get_users(user_id):
   url = f'http://localhost:5000/user?id={user_id}'
@@ -141,6 +154,15 @@ users_output = get_users(-1)
 print(f'users code of response is: {users_output.status_code}')
 print('users are:')
 print(users_output.text)
+
+
+#login
+
+print('Making call to login')
+login_output = login()
+print(f'status code of response is: {login_output.status_code} ')
+print('output object is:')
+print(login_output.text)
 
 
 

@@ -5,14 +5,22 @@ from Pycasso.Enumerations.Job_Status import Job_Status as JobStatus
 from Pycasso.Core.Job_Repository import *
 from Pycasso.Core.User_Repository import *
 from Pycasso.Core.Neural_Transfer import Neural_Transfer as NT
+from Pycasso.Core.Password_Manager import Password_Manager as PM
 import datetime
 from PIL import Image
 from io import BytesIO
 import base64
 import os
+#JWT manager imports
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 
 app = Flask(__name__)
 api = Api(app)
+#secret initialization for JWT
+app.config['JWT_SECRET_KEY'] = 'my-jwt-secret'
+jwt = JWTManager(app)
+#end secret initialization for JWT
 
 #Static definitions
 API_VERSIONS = {
@@ -38,7 +46,6 @@ class Version(Resource):
     def get(self):
         return API_VERSIONS['0.0.4']
 
-
 class User(Resource):
     #returns a list of users
     def get(self):
@@ -63,7 +70,8 @@ class User(Resource):
         Last = args['Last']
         Email = args['Email']
         Password = args['Password']
-        user = user_repo.create_user({'first': First, 'last': Last, 'email': Email, 'password': Password})
+        Name = args['Name']
+        user = user_repo.create_user({'first': First, 'last': Last, 'name' : Name, 'email': Email, 'password': Password})
         return user, 200
     #deletes a user in pycasso
     def delete(self):
@@ -74,6 +82,25 @@ class User(Resource):
         user_repo = User_Repository(Users_Repo_Path)
         user_repo.delete(user_id)
         return 'User Deleted', 200
+class UserLogin(Resource):
+    def post(self):
+        #get user repo
+        user_repo = User_Repository(Users_Repo_Path)
+        password_manager = PM(salt = "salt")
+        args = request.get_json(force=True)
+        Name = args['Name']
+        Password = args['Password']
+        #parse args
+        # login sample:
+        # {Name : Name, Password: Password}
+        #get first matching user
+        user = user_repo.get_user_from_name(Name)[0]
+        #verify hash
+        if password_manager.sha512_verify(Password, user['password']):
+            access_token = create_access_token(identity = Name)
+            return {"access_token" : access_token, "message": "success"}, 200
+        else:
+            return {"access_token" : "", "message": "login failure"}, 200
 
 #Jobs are requests to initiate training a model or processing a pycasso job
 class Job(Resource):
@@ -140,6 +167,7 @@ class Job(Resource):
 api.add_resource(Version, '/version')
 api.add_resource(Job, '/job')
 api.add_resource(User, '/user')
+api.add_resource(UserLogin, '/login')
 
 
 if __name__ == '__main__':

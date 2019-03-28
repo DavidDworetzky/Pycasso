@@ -19,7 +19,7 @@ class User_Repository:
         create_date = datetime.datetime.now()
         create_date_string = str(create_date)
         hash = self.pw_manager.sha512_hash(user['password'])
-        user = {'first' : user['first'], 'last' : user['last'], 'id': user_id_string, 'create_date': create_date_string, 'hash' : hash}
+        user = {'first' : user['first'], 'last' : user['last'], 'name' : user['name'], 'id': user_id_string, 'create_date': create_date_string, 'password' : hash}
         self.db.insert(user)
         return user
     def delete_user(self, user_id):
@@ -33,6 +33,11 @@ class User_Repository:
         user = Query()
         #query tinyDB for a user matching user_id
         result = self.db.search(user.id == user_id)
+        return result
+    def get_user_from_name(self, name):
+        user = Query()
+        #query tinyDB for a user matching user name
+        result = self.db.search(user.name == name)
         return result
     def get_all_users(self):
         #query all users
