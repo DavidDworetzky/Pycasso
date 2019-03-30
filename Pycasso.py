@@ -20,6 +20,7 @@ api = Api(app)
 #secret initialization for JWT
 app.config['JWT_SECRET_KEY'] = 'my-jwt-secret'
 jwt = JWTManager(app)
+PASSWORD_SALT = "salt"
 #end secret initialization for JWT
 
 #Static definitions
@@ -63,7 +64,7 @@ class User(Resource):
 
     #creates a new user in pycasso
     def post(self):
-        user_repo = User_Repository(Users_Repo_Path)
+        user_repo = User_Repository(Users_Repo_Path, password_salt = PASSWORD_SALT)
         args = request.get_json(force=True)
         #variable initialization
         First = args['First']
@@ -86,7 +87,7 @@ class UserLogin(Resource):
     def post(self):
         #get user repo
         user_repo = User_Repository(Users_Repo_Path)
-        password_manager = PM(salt = "salt")
+        password_manager = PM(salt = PASSWORD_SALT)
         args = request.get_json(force=True)
         Name = args['Name']
         Password = args['Password']
@@ -96,7 +97,8 @@ class UserLogin(Resource):
         #get first matching user
         user = user_repo.get_user_from_name(Name)[0]
         #verify hash
-        if password_manager.sha512_verify(Password, user['password']):
+        hash_verified = password_manager.sha512_verify(Password, user['password'])
+        if hash_verified:
             access_token = create_access_token(identity = Name)
             return {"access_token" : access_token, "message": "success"}, 200
         else:
