@@ -146,9 +146,12 @@ print(f'status code of response is: {login_output.status_code} ')
 print('output object is:')
 print(login_output.text)
 
+#get auth token
 auth_token = json.loads(login_output.text)['access_token']
 print('Auth token is:')
 print(auth_token)
+
+#now queue jobs 
 
 wd = os.getcwd()
 guitarist =  os.path.join(wd, "data\\guitarist.jpg")
