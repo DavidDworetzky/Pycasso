@@ -112,9 +112,9 @@ def login():
   return response
   
 
-def get_users(user_id):
+def get_users(user_id, auth_token = None):
   url = f'http://localhost:5000/user?id={user_id}'
-  response = requests.get(url)
+  response = requests.get(url, headers={'Authorization': f'Bearer {auth_token}'})
   return response
 
 
@@ -131,13 +131,6 @@ print(f'status code of response is: {user_output.status_code} ')
 print('user is:')
 print(user_output.text)
 
-print('Getting users')
-users_output = get_users(-1)
-print(f'users code of response is: {users_output.status_code}')
-print('users are:')
-print(users_output.text)
-
-
 #login
 
 print('Making call to login')
@@ -150,6 +143,14 @@ print(login_output.text)
 auth_token = json.loads(login_output.text)['access_token']
 print('Auth token is:')
 print(auth_token)
+
+#now get users
+
+print('Getting users')
+users_output = get_users(-1, auth_token= auth_token)
+print(f'users code of response is: {users_output.status_code}')
+print('users are:')
+print(users_output.text)
 
 #now queue jobs 
 
@@ -170,6 +171,7 @@ print('statuses are:')
 print(statuses_output.text)
 statuses = format_statuses_response(statuses_output.text)
 print_statuses_response(statuses)
+
 
 
 

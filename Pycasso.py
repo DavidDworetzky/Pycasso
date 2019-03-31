@@ -49,6 +49,7 @@ class Version(Resource):
 
 class User(Resource):
     #returns a list of users
+    @jwt_required
     def get(self):
         user_repo = User_Repository(Users_Repo_Path)
         parser = reqparse.RequestParser()
