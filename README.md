@@ -21,3 +21,4 @@ If you wish to replace your own images, simply add images to the Data folder and
 4. pip3 install https://download.pytorch.org/whl/cu100/torch-1.0.1-cp37-cp37m-win_amd64.whl (or whichever .whl is appropriate for your processor)
 5. pip3 install torchvision
 6. pip install flask_jwt_extended
+7. pip install requests
