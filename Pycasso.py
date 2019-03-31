@@ -107,6 +107,7 @@ class UserLogin(Resource):
 #Jobs are requests to initiate training a model or processing a pycasso job
 class Job(Resource):
     #returns a job status. -1 for job_id is ALL
+    @jwt_required
     def get(self):
         #get args
         parser = reqparse.RequestParser()
@@ -124,6 +125,7 @@ class Job(Resource):
             return statuses_summary, 200
 
     #Starts a job on Pycasso
+    @jwt_required
     def post(self):
         job_repo = Job_Repository(Repo_Path)
         args = request.get_json(force=True)
@@ -154,6 +156,7 @@ class Job(Resource):
             return 'Type Not Supported Yet', 400
 
     #Terminates a job on Pycasso
+    @jwt_required
     def delete(self):
         parser = reqparse.RequestParser()
         parser.add_argument('id', type=str)
