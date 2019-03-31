@@ -76,6 +76,7 @@ class User(Resource):
         user = user_repo.create_user({'first': First, 'last': Last, 'name' : Name, 'email': Email, 'password': Password})
         return user, 200
     #deletes a user in pycasso
+    @jwt_required
     def delete(self):
         parser = reqparse.RequestParser()
         args = parser.parse_args()
