@@ -97,7 +97,7 @@ class UserLogin(Resource):
         # login sample:
         # {Name : Name, Password: Password}
         #get first matching user
-        user = user_repo.get_user_from_name(Name)[0]
+        user = user_repo.get_user_from_name(Name)
         #verify hash
         hash_verified = password_manager.sha512_verify(Password, user['password'])
         if hash_verified:
@@ -144,12 +144,11 @@ class Job(Resource):
         current_user = get_jwt_identity()
         user_repo = User_Repository(Users_Repo_Path)
         user = user_repo.get_user_from_name(current_user)
-        print(user)
         #job execution
         if Converted_Type == JobType.Neural_Transfer:
             #Source Image is the Content Image, and Target_Image is the style image
             Job_Data = [Source_Image, Target_Image]
-            job_out = job_repo.queue_job({'name': 'Neural_Transfer', 'create_date': Job_Start, 'data': Job_Data, 'user_id' : user.id})
+            job_out = job_repo.queue_job({'name': 'Neural_Transfer', 'create_date': Job_Start, 'data': Job_Data, 'user_id' : user['id']})
             Neural_Transfer = NT(Crop_Size, Source_Image, Target_Image)
             #run a 600 step transfer to begin
             output = Neural_Transfer.run_transfer(600)

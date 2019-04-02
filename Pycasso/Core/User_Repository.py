@@ -38,7 +38,8 @@ class User_Repository:
         user = Query()
         #query tinyDB for a user matching user name
         result = self.db.search(user.name == name)
-        return result
+        #return first matching name
+        return result[0]
     def get_all_users(self):
         #query all users
         result = self.db.all()
