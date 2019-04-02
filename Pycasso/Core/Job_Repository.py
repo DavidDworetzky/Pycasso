@@ -44,12 +44,12 @@ class Job_Repository:
         job_id_string = str(job_id)
         create_date_string = str(job['create_date'])
         job_status_int = JobStatusMapping[JobStatus.Queued]
-        job = {'name' : job['name'], 'id': job_id_string, 'create_date': create_date_string, 'status': job_status_int, 'data': job['data'], 'end_date': ''}
+        job = {'name' : job['name'], 'id': job_id_string, 'create_date': create_date_string, 'status': job_status_int, 'data': job['data'], 'end_date': '', 'user_id': job['user_id']}
         self.db.insert(job)
         return job
     def terminate_job(self, job_id):
         Job = Query()
-        self.db.update(terminate_job_tinydb(job_id), Job.id == job_id)
+        self.db.update(delete(job_id), Job.id == job_id)
         return True
     def complete_job(self, job_id):
         Job = Query()

@@ -25,7 +25,7 @@ PASSWORD_SALT = "salt"
 
 #Static definitions
 API_VERSIONS = {
-    '0.0.4': '0.0.4'
+    '0.0.5': '0.0.5'
 }
 #get current directory for relative paths
 wd = os.getcwd()
@@ -45,7 +45,7 @@ Users_Repo_Path = os.path.join(wd, 'users.json')
 #api versions
 class Version(Resource):
     def get(self):
-        return API_VERSIONS['0.0.4']
+        return API_VERSIONS['0.0.5']
 
 class User(Resource):
     #returns a list of users
@@ -136,11 +136,16 @@ class Job(Resource):
         Crop_Size = args['ImCrop']
         Source_Image = Process_Json_Arg(args['Source_Image'])
         Target_Image = Process_Json_Arg(args['Target_Image'])
+        #now get our jwt_identity for recording jobs
+        current_user = get_jwt_identity()
+        user_repo = User_Repository(Users_Repo_Path)
+        user = user_repo.get_user_from_name(current_user)
+        print(user)
         #job execution
         if Converted_Type == JobType.Neural_Transfer:
             #Source Image is the Content Image, and Target_Image is the style image
             Job_Data = [Source_Image, Target_Image]
-            job_out = job_repo.queue_job({'name': 'Neural_Transfer', 'create_date': Job_Start, 'data': Job_Data})
+            job_out = job_repo.queue_job({'name': 'Neural_Transfer', 'create_date': Job_Start, 'data': Job_Data, 'user_id' : user.id})
             Neural_Transfer = NT(Crop_Size, Source_Image, Target_Image)
             #run a 600 step transfer to begin
             output = Neural_Transfer.run_transfer(600)
