@@ -12,3 +12,13 @@ To get started, do the following:
 ## Samples
 Integration.py will take some sample images already helpfully included in the folder and run Neural_Transfer on them. 
 If you wish to replace your own images, simply add images to the Data folder and change out the queue_job call with your own images.
+
+
+## Dependencies
+1. pip install flask
+2. pip install flask-RESTful
+3. pip install tinydb
+4. pip3 install https://download.pytorch.org/whl/cu100/torch-1.0.1-cp37-cp37m-win_amd64.whl (or whichever .whl is appropriate for your processor)
+5. pip3 install torchvision
+6. pip install flask_jwt_extended
+7. pip install requests

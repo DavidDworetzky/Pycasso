@@ -19,9 +19,9 @@ def make_version_call():
     response = requests.get(url)
     return response
 
-def make_statuses_call(job_id):
+def make_statuses_call(job_id, auth_token = None):
     url = f'http://localhost:5000/job?id={job_id}'
-    response = requests.get(url)
+    response = requests.get(url, headers={'Authorization': f'Bearer {auth_token}'})
     return response
 
 def strip_datetime_fraction(time_string):
@@ -58,7 +58,7 @@ def is_json(myjson):
     return False
   return True
 
-def queue_job(content_path, style_path):
+def queue_job(content_path, style_path, auth_token = None):
     # Neural_Transfer = 1
     # GAN = 2
     # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize}
@@ -81,7 +81,7 @@ def queue_job(content_path, style_path):
     is_valid_json = is_json(data)
     print(f'data is json: {is_valid_json}')
     print(f'posting data to {url} to queue job')
-    response = requests.post(url, data=data)
+    response = requests.post(url, data=data, headers={'Authorization': f'Bearer {auth_token}'})
     #returns job id and image
     return response
 
@@ -112,9 +112,9 @@ def login():
   return response
   
 
-def get_users(user_id):
+def get_users(user_id, auth_token = None):
   url = f'http://localhost:5000/user?id={user_id}'
-  response = requests.get(url)
+  response = requests.get(url, headers={'Authorization': f'Bearer {auth_token}'})
   return response
 
 
@@ -122,24 +122,6 @@ print('Making version call')
 version = make_version_call()
 print(f'api version is : {version.text}')
 print(f'status code of response is: {version.status_code}')
-
-wd = os.getcwd()
-guitarist =  os.path.join(wd, "data\\guitarist.jpg")
-singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
-print('Queueing image job')
-output = queue_job(guitarist, singing_butler)
-print(f'status code of response is: {output.status_code}')
-print('output content')
-print(output.text)
-
-print('Making statuses call')
-statuses = -1
-statuses_output = make_statuses_call(statuses)
-print(f'status code of response is: {statuses_output.status_code} ')
-print('statuses are:')
-print(statuses_output.text)
-statuses = format_statuses_response(statuses_output.text)
-print_statuses_response(statuses)
 
 #users
 
@@ -149,13 +131,6 @@ print(f'status code of response is: {user_output.status_code} ')
 print('user is:')
 print(user_output.text)
 
-print('Getting users')
-users_output = get_users(-1)
-print(f'users code of response is: {users_output.status_code}')
-print('users are:')
-print(users_output.text)
-
-
 #login
 
 print('Making call to login')
@@ -163,6 +138,41 @@ login_output = login()
 print(f'status code of response is: {login_output.status_code} ')
 print('output object is:')
 print(login_output.text)
+
+#get auth token
+auth_token = json.loads(login_output.text)['access_token']
+print('Auth token is:')
+print(auth_token)
+
+#now get users
+
+print('Getting users')
+users_output = get_users(-1, auth_token= auth_token)
+print(f'users code of response is: {users_output.status_code}')
+print('users are:')
+print(users_output.text)
+
+#now queue jobs 
+
+wd = os.getcwd()
+guitarist =  os.path.join(wd, "data\\guitarist.jpg")
+singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
+print('Queueing image job')
+output = queue_job(guitarist, singing_butler, auth_token= auth_token)
+print(f'status code of response is: {output.status_code}')
+print('output content')
+print(output.text)
+
+print('Making statuses call')
+statuses = -1
+statuses_output = make_statuses_call(statuses, auth_token= auth_token)
+print(f'status code of response is: {statuses_output.status_code} ')
+print('statuses are:')
+print(statuses_output.text)
+statuses = format_statuses_response(statuses_output.text)
+print_statuses_response(statuses)
+
+
 
 
 
