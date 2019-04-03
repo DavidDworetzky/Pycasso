@@ -118,12 +118,25 @@ class Job(Resource):
         job_id = args['id']
         #now return job status query
         job_repo = Job_Repository(Repo_Path)
+
+        #now get our jwt_identity for verifying access
+        current_user = get_jwt_identity()
+        user_repo = User_Repository(Users_Repo_Path)
+        user = user_repo.get_user_from_name(current_user)
+        #user id
+        user_id = user['id']
         if job_id != '-1':
             status = job_repo.get_status(job_id)
-            return status, 200
+            #if status matches, return status, otherwise, return 404
+            if status['user_id'] == user_id: 
+                return status, 200
+            else:
+                return 'job not found', 404
         else:
             statuses = job_repo.get_all_statuses()
-            statuses_summary = [{'name': x['name'], 'id': x['id'], 'create_date': x['create_date'], 'status': x['status'], 'end_date': x.get('end_date', '')} for x in statuses]
+            #filter statuses based off of user_id
+            statuses_filtered = list(filter(lambda x: x['user_id'] == user_id, statuses))
+            statuses_summary = [{'name': x['name'], 'id': x['id'], 'create_date': x['create_date'], 'status': x['status'], 'end_date': x.get('end_date', '')} for x in statuses_filtered]
             return statuses_summary, 200
 
     #Starts a job on Pycasso
