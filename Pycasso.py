@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_restful import reqparse, abort, Api, Resource
 from Pycasso.Enumerations.Job_Type import Job_Type as JobType
 from Pycasso.Enumerations.Job_Status import Job_Status as JobStatus
+from Pycasso.Enumerations.User_Type import User_Type as UserType
 from Pycasso.Core.Job_Repository import *
 from Pycasso.Core.User_Repository import *
 from Pycasso.Core.Neural_Transfer import Neural_Transfer as NT
@@ -66,6 +67,11 @@ class User(Resource):
     #creates a new user in pycasso
     def post(self):
         user_repo = User_Repository(Users_Repo_Path, password_salt = PASSWORD_SALT)
+        #assign user type as admin if this is the first user of the 
+        is_admin = user_repo.get_count_all_users() == 0
+        print(is_admin)
+        user_type = UserType.Admin if is_admin else UserType.User
+        print(user_type)
         args = request.get_json(force=True)
         #variable initialization
         First = args['First']
@@ -73,7 +79,7 @@ class User(Resource):
         Email = args['Email']
         Password = args['Password']
         Name = args['Name']
-        user = user_repo.create_user({'first': First, 'last': Last, 'name' : Name, 'email': Email, 'password': Password})
+        user = user_repo.create_user({'first': First, 'last': Last, 'name' : Name, 'email': Email, 'password': Password, 'type' : user_type})
         return user, 200
     #deletes a user in pycasso
     @jwt_required
