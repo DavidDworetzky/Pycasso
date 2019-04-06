@@ -85,18 +85,18 @@ def queue_job(content_path, style_path, auth_token = None):
     #returns job id and image
     return response
 
-def create_user():
-  url = 'http://localhost:5000/user'
+def create_user(auth_token = None, admin = True):
+  url = 'http://localhost:5000/adminuser' if admin else 'http://localhost:5000/user'
   first = 'David'
   last = 'Dworetzky'
-  name = 'Ddworetzky'
+  name = 'Ddworetzky' if admin else 'Dworetzky'
   email = 'fake@email.com'
   password = 'fakepassword'
   data = f'{{"First": "{first}", "Last": "{last}", "Name": "{name}", "Email" : "{email}", "Password" : "{password}"}}'
   is_valid_json = is_json(data)
   print(f'data is json: {is_valid_json}')
   print(f'posting data to {url} to create user')
-  response = requests.post(url, data=data)
+  response = requests.post(url, data=data, headers={'Authorization': f'Bearer {auth_token}'})
   #returns user object
   return response
 def login():
@@ -123,10 +123,11 @@ version = make_version_call()
 print(f'api version is : {version.text}')
 print(f'status code of response is: {version.status_code}')
 
+auth_token = None
 #users
 
-print('Making create users call')
-user_output = create_user()
+print('Making create users call - admin')
+user_output = create_user(auth_token=auth_token, admin=True)
 print(f'status code of response is: {user_output.status_code} ')
 print('user is:')
 print(user_output.text)
@@ -143,6 +144,12 @@ print(login_output.text)
 auth_token = json.loads(login_output.text)['access_token']
 print('Auth token is:')
 print(auth_token)
+
+print('Making create users call')
+user_output = create_user(auth_token=auth_token, admin=False)
+print(f'status code of response is: {user_output.status_code} ')
+print('user is:')
+print(user_output.text)
 
 #now get users
 

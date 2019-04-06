@@ -48,6 +48,27 @@ class Version(Resource):
     def get(self):
         return API_VERSIONS['0.0.5']
 
+#creates a new admin user in pycasso. Can only invoke if no other users have been created
+#TODO : This is a hack to get around limitations with @jwt_required limitations
+class AdminUser(Resource):
+    def post(self):
+        user_repo = User_Repository(Users_Repo_Path, password_salt = PASSWORD_SALT)
+        #assign user type as admin if this is the first user created on the server
+        is_admin = user_repo.get_count_all_users() == 0
+        user_type = UserType.Admin if is_admin else UserType.User
+        #now get our jwt_identity for verifying access... only if this is not the first user
+        if not is_admin:
+            return 'Not the first user. Cannot create as admin user', 401
+        #now get args and create user
+        args = request.get_json(force=True)
+        #variable initialization
+        First = args['First']
+        Last = args['Last']
+        Email = args['Email']
+        Password = args['Password']
+        Name = args['Name']
+        user = user_repo.create_user({'first': First, 'last': Last, 'name' : Name, 'email': Email, 'password': Password, 'type' : user_type})
+        return user, 200
 class User(Resource):
     #returns a list of users
     @jwt_required
@@ -65,11 +86,19 @@ class User(Resource):
             return users, 200
 
     #creates a new user in pycasso
+    @jwt_required
     def post(self):
         user_repo = User_Repository(Users_Repo_Path, password_salt = PASSWORD_SALT)
         #assign user type as admin if this is the first user created on the server
         is_admin = user_repo.get_count_all_users() == 0
         user_type = UserType.Admin if is_admin else UserType.User
+        #now get our jwt_identity for verifying access... only if this is not the first user
+        if not is_admin:
+            current_user = get_jwt_identity()
+            print(current_user)
+            user_identity = user_repo.get_user_from_name(current_user)
+            if user_identity['type'] != 2:
+                return 'Non admin users cannot create users', 401
         #now get args and create user
         args = request.get_json(force=True)
         #variable initialization
@@ -151,7 +180,6 @@ class Job(Resource):
         args = request.get_json(force=True)
         # job definition sample:
         # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize}
-
         #variable initialization
         Converted_Type = JobType(args['Job_Type'])
         Job_Start = datetime.datetime.now()
@@ -197,6 +225,7 @@ api.add_resource(Version, '/version')
 api.add_resource(Job, '/job')
 api.add_resource(User, '/user')
 api.add_resource(UserLogin, '/login')
+api.add_resource(AdminUser, '/adminuser')
 
 
 if __name__ == '__main__':
