@@ -46,7 +46,7 @@ Users_Repo_Path = os.path.join(wd, 'users.json')
 #api versions
 class Version(Resource):
     def get(self):
-        return API_VERSIONS['0.0.5']
+        return next(iter(API_VERSIONS))
 
 #creates a new admin user in pycasso. Can only invoke if no other users have been created
 #TODO : This is a hack to get around limitations with @jwt_required limitations
