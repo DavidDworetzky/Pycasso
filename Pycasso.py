@@ -5,6 +5,7 @@ from Pycasso.Enumerations.Job_Status import Job_Status as JobStatus
 from Pycasso.Enumerations.User_Type import User_Type as UserType
 from Pycasso.Core.Job_Repository import *
 from Pycasso.Core.User_Repository import *
+from Pycasso.Core.Gpu_Device_Manager import *
 from Pycasso.Core.Neural_Transfer import Neural_Transfer as NT
 from Pycasso.Core.Password_Manager import Password_Manager as PM
 import datetime
@@ -26,7 +27,7 @@ PASSWORD_SALT = "salt"
 
 #Static definitions
 API_VERSIONS = {
-    '0.0.5': '0.0.5'
+    '0.0.6': '0.0.6'
 }
 #get current directory for relative paths
 wd = os.getcwd()
@@ -218,6 +219,13 @@ class Job(Resource):
         job_repo = Job_Repository(Repo_Path)
         job_repo.terminate_job(job_id)
         return 'Job Terminated', 200
+#Gets device information for running GPU enabled workloads
+class Device(Resource):
+    def get(self):
+        device = Gpu_Device_Manager()
+        #gets if this is running on a CUDA enabled device...
+        device_status = device.get_device()
+        return device_status, 200
 ##
 ## Actually setup the Api resource routing here
 ##
@@ -226,6 +234,7 @@ api.add_resource(Job, '/job')
 api.add_resource(User, '/user')
 api.add_resource(UserLogin, '/login')
 api.add_resource(AdminUser, '/adminuser')
+api.add_resource(Device, '/device')
 
 
 if __name__ == '__main__':

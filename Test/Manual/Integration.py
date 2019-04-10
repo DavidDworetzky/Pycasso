@@ -19,6 +19,11 @@ def make_version_call():
     response = requests.get(url)
     return response
 
+def make_device_call():
+    url = 'http://localhost:5000/device'
+    response = requests.get(url)
+    return response
+
 def make_statuses_call(job_id, auth_token = None):
     url = f'http://localhost:5000/job?id={job_id}'
     response = requests.get(url, headers={'Authorization': f'Bearer {auth_token}'})
@@ -117,11 +122,17 @@ def get_users(user_id, auth_token = None):
   response = requests.get(url, headers={'Authorization': f'Bearer {auth_token}'})
   return response
 
-
+#version call
 print('Making version call')
 version = make_version_call()
 print(f'api version is : {version.text}')
 print(f'status code of response is: {version.status_code}')
+
+#device call
+print('Making device call')
+device = make_device_call()
+print(f'device status is : {device.text}')
+print(f'device code of response is: {device.status_code}')
 
 auth_token = None
 #users
