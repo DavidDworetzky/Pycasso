@@ -20,4 +20,8 @@ class Process_Queue:
     def Start_Processes(self):
         return
 
+    def Stop_Processes(self):
+        return
+    
+
     
