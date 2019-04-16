@@ -36,5 +36,9 @@ class Process_Queue:
             p.join()
         return
     
+class Process_Job:
+    def __init__(self, id, func):
+        self.id = id
+        self.func = func
 
     
