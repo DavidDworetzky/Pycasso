@@ -8,9 +8,9 @@ class Process_Queue:
         #locking and synchronization primitives
         self.QueueLock = mp.Lock()
         self.RunningLock = mp.Lock()
+        self.ProcessesLock = mp.Lock()
         #Queue is running
         self.Running = False
-
 
     #Enqueue a process item... Anything in queue is waiting to be processed
     def Enqueue(self, queue_item):
@@ -18,10 +18,9 @@ class Process_Queue:
         self.Queue.put(queue_item)
         self.QueueLock.release()
     #Dequeue a process item in order to begin job processing
-    def Dequeue(self, queue):
+    def Dequeue(self):
         self.QueueLock.acquire()
         result = self.Queue.get()
-        self.Processes.append(result)
         self.QueueLock.release()
         return result
 
@@ -32,13 +31,28 @@ class Process_Queue:
         while self.Running:
             # while we are running: 
             # check for job completion, and remove completed jobs from the list of running processes, and Dequeue processes to run
-            for i in range(1, self.Num_Process):
-                function = override_function if override_function is not None else self.function
-                p = mp.Process(target = function)
-                self.Processes.append(p)
-                p.start()
-            return
-
+            for process in self.Processes:
+                if not process.process.is_alive():
+                    #process has finished, mark as complete, and remove from self.Processes
+                    process.completed = True
+                    process.notify_complete(process)
+                    #remove
+                    self.ProcessesLock.acquire()
+                    self.Processes = self.Remove_Process_After_Complete(process)
+                    self.ProcessesLock.release()
+            # queue up more processes if we are currently under the max count of processes
+            while len(self.Processes) < self.Num_Process:
+                process = self.Dequeue()
+                multi_p = mp.Process(target = process.function)
+                process.process = multi_p
+                self.Processes.append(process)
+                multi_p.start()
+        #return if running turned off
+        return
+    def Remove_Process_After_Complete(self, to_remove):
+        x_id = to_remove.id
+        x_list = list([x for x in self.Processes if x.id != x_id])
+        return x_list
     def Stop_Processes(self):
         self.RunningLock.acquire()
         self.Running = False
@@ -47,9 +61,13 @@ class Process_Queue:
             p.join()
         return
     
+#Process Job DTO for use in a process queue
 class Process_Job:
-    def __init__(self, id, function):
+    def __init__(self, id, function, notify_complete, process = None):
         self.id = id
         self.function = function
+        self.completed = False
+        self.notify_complete = notify_complete
+        self.process = process
 
     
