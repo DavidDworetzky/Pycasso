@@ -3,6 +3,8 @@ import sys
 sys.path.append("..")
 sys.path.append("..\..")
 from Pycasso.Core.Password_Manager import Password_Manager as PM
+from Pycasso.Core.Process_Queue import Process_Job as Process_Job
+from Pycasso.Core.Process_Queue import Process_Queue as Process_Queue
 
 #Fixtures
 TEST_PASSWORD = "Password!"
@@ -36,6 +38,21 @@ class TestPasswordManager(unittest.TestCase):
         self.assertTrue(hash != "")
         #assert hash failure
         self.assertFalse(manager.sha512_verify("Another Password", hash))
+
+'''class TestMultiProcessing(unittest.TestCase):
+
+
+    def test_queue_jobs_simple(self):
+
+    def test_queue_jobs_staggered(self):
+
+    def test_queue_jobs_concurrent(self):
+
+    '''
+
+
+
+    
 
 if __name__ == '__main__':
     unittest.main()
