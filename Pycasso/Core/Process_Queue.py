@@ -1,7 +1,7 @@
 import multiprocessing as mp
 
 class Process_Queue:
-    def __init__(self, Queue, Num_Process = 4):
+    def __init__(self, Num_Process = 4):
         self.Num_Process = Num_Process
         self.Queue = mp.Queue()
         self.Processes = []
