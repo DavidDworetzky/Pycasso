@@ -59,6 +59,17 @@ def simple_notify(process):
 
 class TestMultiProcessing(unittest.TestCase):
 
+    def test_queue_single_job(self):
+        id = uuid.uuid4()
+        id_str = str(id)
+        simple_job = Process_Job(id, simple_method, simple_notify)
+        #now create process queue and verify the only job complete
+        process_queue = Process_Queue()
+        process_queue.Enqueue(simple_job)
+        process_queue.Start_Processes()
+        #sleep and then assert completed
+        time.sleep(1)
+        self.assertTrue(simple_job.completed)
     def test_queue_jobs_simple(self):
         id = uuid.uuid4()
         id_str = str(id)
