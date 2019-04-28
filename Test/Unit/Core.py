@@ -60,6 +60,7 @@ def simple_notify(process):
 class TestMultiProcessing(unittest.TestCase):
 
     def test_queue_single_job(self):
+        print('Executing test queue single job')
         id = uuid.uuid4()
         id_str = str(id)
         simple_job = Process_Job(id, simple_method, simple_notify)
@@ -71,6 +72,7 @@ class TestMultiProcessing(unittest.TestCase):
         time.sleep(1)
         self.assertTrue(simple_job.completed)
     def test_queue_jobs_simple(self):
+        print('Executing test queue jobs simple')
         id = uuid.uuid4()
         id_str = str(id)
         id2 = uuid.uuid4()
@@ -89,6 +91,7 @@ class TestMultiProcessing(unittest.TestCase):
         self.assertTrue(simple_job_2.completed)
 
     def test_queue_jobs_staggered(self):
+        print('Executing test queue jobs staggered')
         id = uuid.uuid4()
         id_str = str(id)
         id2 = uuid.uuid4()
@@ -107,6 +110,7 @@ class TestMultiProcessing(unittest.TestCase):
         self.assertTrue(complex_job_2.completed)
 
     def test_queue_jobs_concurrent(self):
+        print('Executing test queue jobs concurrent')
         id = uuid.uuid4()
         id_str = str(id)
         id2 = uuid.uuid4()
