@@ -24,10 +24,8 @@ class Process_Queue:
         self.QueueLock.release()
         return result
 
-    def Start_Processes(self, override_function = None):
-        self.RunningLock.acquire()
-        self.Running = True
-        self.RunningLock.release()
+    #Core run processes loop
+    def Run_Processes(self):
         while self.Running:
             # while we are running: 
             # check for job completion, and remove completed jobs from the list of running processes, and Dequeue processes to run
@@ -49,6 +47,20 @@ class Process_Queue:
                 multi_p.start()
         #return if running turned off
         return
+
+
+    def Start_Processes(self, separate_process = True):
+        self.RunningLock.acquire()
+        self.Running = True
+        self.RunningLock.release()
+        if separate_process:
+            run_proc = mp.Process(target = self.Run_Processes)
+            run_proc.start()
+            return run_proc
+        else:
+            self.Run_Processes()
+        return
+        
     def Remove_Process_After_Complete(self, to_remove):
         x_id = to_remove.id
         x_list = list([x for x in self.Processes if x.id != x_id])

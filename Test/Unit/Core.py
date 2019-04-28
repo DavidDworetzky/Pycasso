@@ -119,8 +119,10 @@ class TestMultiProcessing(unittest.TestCase):
         complex_job_2 = Process_Job(id2, complex_method, simple_notify)
         #now create process queue and verify jobs complete
         process_queue = Process_Queue()
+        print('Enqueue test queue jobs concurrent')
         process_queue.Enqueue(complex_job)
         process_queue.Enqueue(complex_job_2)
+        print('Start test queue jobs concurrent')
         process_queue.Start_Processes()
         #sleep and then assert completed
         time.sleep(5)
