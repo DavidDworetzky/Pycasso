@@ -1,7 +1,7 @@
 import multiprocessing as mp
 
 class Process_Queue:
-    def __init__(self, Num_Process = 4):
+    def __init__(self, Num_Process = 4, debug=True):
         self.Num_Process = Num_Process
         self.Queue = mp.Queue()
         self.Processes = []
@@ -11,6 +11,7 @@ class Process_Queue:
         self.ProcessesLock = mp.Lock()
         #Queue is running
         self.Running = False
+        self.debug = debug
 
     #Enqueue a process item... Anything in queue is waiting to be processed
     def Enqueue(self, queue_item):
