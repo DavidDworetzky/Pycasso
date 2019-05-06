@@ -15,11 +15,15 @@ class Process_Queue:
 
     #Enqueue a process item... Anything in queue is waiting to be processed
     def Enqueue(self, queue_item):
+        if self.debug:
+            print('Enqueueing item')
         self.QueueLock.acquire()
         self.Queue.put(queue_item)
         self.QueueLock.release()
     #Dequeue a process item in order to begin job processing
     def Dequeue(self):
+        if self.debug:
+            print('Dequeueing item')
         self.QueueLock.acquire()
         result = self.Queue.get()
         self.QueueLock.release()
@@ -27,6 +31,8 @@ class Process_Queue:
 
     #Core run processes loop
     def Run_Processes(self):
+        if self.debug:
+            print('Running process loop')
         while self.Running:
             # while we are running: 
             # check for job completion, and remove completed jobs from the list of running processes, and Dequeue processes to run
