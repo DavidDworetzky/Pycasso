@@ -32,14 +32,14 @@ class Process_Queue:
     #Core run processes loop
     def Run_Processes(self):
         if self.debug:
-            print('Running process loop')
+            print('||Running process loop||')
         while self.Running:
             # while we are running: 
             # check for job completion, and remove completed jobs from the list of running processes, and Dequeue processes to run
             for process in self.Processes:
                 if not process.process.is_alive():
                     if self.debug:
-                        print('Marking process as completed')
+                        print(f'Marking process as completed for process id: {process.id}')
                     #process has finished, mark as complete, and remove from self.Processes
                     process.completed = True
                     process.notify_complete(process)
@@ -49,9 +49,9 @@ class Process_Queue:
                     self.ProcessesLock.release()
             # queue up more processes if we are currently under the max count of processes
             while len(self.Processes) < self.Num_Process:
-                if self.debug:
-                    print('Queue up more processes')
                 process = self.Dequeue()
+                if self.debug:
+                    print(f'Queue up more processes. Getting process id: {process.id}')
                 multi_p = mp.Process(target = process.function)
                 process.process = multi_p
                 self.Processes.append(process)
@@ -61,6 +61,8 @@ class Process_Queue:
 
 
     def Start_Processes(self, separate_process = True):
+        if self.debug:
+            print('||Starting Processes||')
         self.RunningLock.acquire()
         self.Running = True
         self.RunningLock.release()
