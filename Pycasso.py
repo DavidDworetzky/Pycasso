@@ -27,7 +27,7 @@ PASSWORD_SALT = "salt"
 
 #Static definitions
 API_VERSIONS = {
-    '0.1.1': '0.1.1'
+    '0.1.2': '0.1.2'
 }
 #get current directory for relative paths
 wd = os.getcwd()
