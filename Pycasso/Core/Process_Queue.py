@@ -1,5 +1,5 @@
 import multiprocessing as mp
-
+#Multiprocessing job queue class
 class Process_Queue:
     def __init__(self, Num_Process = 4, debug=True):
         self.Num_Process = Num_Process
@@ -59,7 +59,7 @@ class Process_Queue:
         #return if running turned off
         return
 
-
+    #Starts our processing queue
     def Start_Processes(self, separate_process = True):
         if self.debug:
             print('||Starting Processes||')
@@ -73,7 +73,7 @@ class Process_Queue:
         else:
             self.Run_Processes()
         return
-        
+    #Removes a process from the run queue after it is completed
     def Remove_Process_After_Complete(self, to_remove):
         x_id = to_remove.id
         x_list = list([x for x in self.Processes if x.id != x_id])
