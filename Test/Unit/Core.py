@@ -72,6 +72,7 @@ class TestMultiProcessing(unittest.TestCase):
         time.sleep(1)
         self.assertTrue(simple_job.completed)
         process_queue.Stop_Processes()
+        print('Finished Test')
     def test_queue_jobs_simple(self):
         print('Executing test queue jobs simple')
         id = uuid.uuid4()
@@ -91,6 +92,7 @@ class TestMultiProcessing(unittest.TestCase):
         self.assertTrue(simple_job.completed)
         self.assertTrue(simple_job_2.completed)
         process_queue.Stop_Processes()
+        print('Finished Test')
 
     def test_queue_jobs_staggered(self):
         print('Executing test queue jobs staggered')
@@ -111,6 +113,7 @@ class TestMultiProcessing(unittest.TestCase):
         self.assertTrue(complex_job.completed)
         self.assertTrue(complex_job_2.completed)
         process_queue.Stop_Processes()
+        print('Finished Test')
 
     def test_queue_jobs_concurrent(self):
         print('Executing test queue jobs concurrent')
@@ -132,6 +135,7 @@ class TestMultiProcessing(unittest.TestCase):
         self.assertTrue(complex_job.completed)
         self.assertTrue(complex_job_2.completed)
         process_queue.Stop_Processes()
+        print('Finished Test')
     
 
 
