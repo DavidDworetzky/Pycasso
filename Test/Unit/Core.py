@@ -60,21 +60,23 @@ def simple_notify(process):
 class TestMultiProcessing(unittest.TestCase):
 
     def test_queue_single_job(self):
-        print('Executing test queue single job')
+        print('||Executing test queue single job||')
         id = uuid.uuid4()
         id_str = str(id)
         simple_job = Process_Job(id, simple_method, simple_notify)
         #now create process queue and verify the only job complete
         process_queue = Process_Queue()
         process_queue.Enqueue(simple_job)
-        process_queue.Start_Processes()
+        p = process_queue.Start_Processes()
         #sleep and then assert completed
         time.sleep(1)
         self.assertTrue(simple_job.completed)
+        print('||Attempt stop processes||')
         process_queue.Stop_Processes()
-        print('Finished Test')
+        p.join()
+        print('||Finished Test||')
     def test_queue_jobs_simple(self):
-        print('Executing test queue jobs simple')
+        print('||Executing test queue jobs simple||')
         id = uuid.uuid4()
         id_str = str(id)
         id2 = uuid.uuid4()
@@ -86,16 +88,18 @@ class TestMultiProcessing(unittest.TestCase):
         process_queue.Enqueue(simple_job)
         process_queue.Enqueue(simple_job_2)
         #start process queue
-        process_queue.Start_Processes()
+        p = process_queue.Start_Processes()
         #sleep and then assert completed
         time.sleep(1)
         self.assertTrue(simple_job.completed)
         self.assertTrue(simple_job_2.completed)
+        print('||Attempt stop processes||')
         process_queue.Stop_Processes()
-        print('Finished Test')
+        p.join()
+        print('||Finished Test||')
 
     def test_queue_jobs_staggered(self):
-        print('Executing test queue jobs staggered')
+        print('||Executing test queue jobs staggered||')
         id = uuid.uuid4()
         id_str = str(id)
         id2 = uuid.uuid4()
@@ -105,18 +109,20 @@ class TestMultiProcessing(unittest.TestCase):
         #now create process queue and verify jobs complete
         process_queue = Process_Queue()
         process_queue.Enqueue(complex_job)
-        process_queue.Start_Processes()
+        p = process_queue.Start_Processes()
         time.sleep(2)
         process_queue.Enqueue(complex_job_2)
         #sleep and then assert completed
         time.sleep(5)
         self.assertTrue(complex_job.completed)
         self.assertTrue(complex_job_2.completed)
+        print('||Attempt stop processes||')
         process_queue.Stop_Processes()
-        print('Finished Test')
+        p.join()
+        print('||Finished Test||')
 
     def test_queue_jobs_concurrent(self):
-        print('Executing test queue jobs concurrent')
+        print('||Executing test queue jobs concurrent||')
         id = uuid.uuid4()
         id_str = str(id)
         id2 = uuid.uuid4()
@@ -129,18 +135,15 @@ class TestMultiProcessing(unittest.TestCase):
         process_queue.Enqueue(complex_job)
         process_queue.Enqueue(complex_job_2)
         print('Start test queue jobs concurrent')
-        process_queue.Start_Processes()
+        p = process_queue.Start_Processes()
         #sleep and then assert completed
         time.sleep(5)
         self.assertTrue(complex_job.completed)
         self.assertTrue(complex_job_2.completed)
+        print('||Attempt stop processes||')
         process_queue.Stop_Processes()
-        print('Finished Test')
-    
-
-
-
-    
+        p.join()
+        print('||Finished Test||')
 
 if __name__ == '__main__':
     unittest.main()
