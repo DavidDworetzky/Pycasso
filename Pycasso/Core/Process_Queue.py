@@ -48,7 +48,7 @@ class Process_Queue:
                     self.Processes = self.Remove_Process_After_Complete(process)
                     self.ProcessesLock.release()
             # queue up more processes if we are currently under the max count of processes
-            while len(self.Processes) < self.Num_Process:
+            if len(self.Processes) < self.Num_Process and not self.Queue.empty():
                 process = self.Dequeue()
                 if self.debug:
                     print(f'Queue up more processes. Getting process id: {process.id}')

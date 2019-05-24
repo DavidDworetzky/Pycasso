@@ -8,8 +8,10 @@ from Pycasso.Core.Process_Queue import Process_Queue as Process_Queue
 import uuid
 import time
 import random
+import multiprocessing as mp
 
 #Fixtures
+mp_lock = mp.Lock()
 TEST_PASSWORD = "Password!"
 def get_password_manager():
     manager = PM(salt = "salt")
@@ -60,6 +62,7 @@ def simple_notify(process):
 class TestMultiProcessing(unittest.TestCase):
 
     def test_queue_single_job(self):
+        mp_lock.acquire()
         print('||Executing test queue single job||')
         id = uuid.uuid4()
         id_str = str(id)
@@ -75,7 +78,9 @@ class TestMultiProcessing(unittest.TestCase):
         process_queue.Stop_Processes()
         p.join()
         print('||Finished Test||')
+        mp_lock.release()
     def test_queue_jobs_simple(self):
+        mp_lock.acquire()
         print('||Executing test queue jobs simple||')
         id = uuid.uuid4()
         id_str = str(id)
@@ -97,8 +102,10 @@ class TestMultiProcessing(unittest.TestCase):
         process_queue.Stop_Processes()
         p.join()
         print('||Finished Test||')
+        mp_lock.release()
 
     def test_queue_jobs_staggered(self):
+        mp_lock.acquire()
         print('||Executing test queue jobs staggered||')
         id = uuid.uuid4()
         id_str = str(id)
@@ -120,8 +127,10 @@ class TestMultiProcessing(unittest.TestCase):
         process_queue.Stop_Processes()
         p.join()
         print('||Finished Test||')
+        mp_lock.release()
 
     def test_queue_jobs_concurrent(self):
+        mp_lock.acquire()
         print('||Executing test queue jobs concurrent||')
         id = uuid.uuid4()
         id_str = str(id)
@@ -144,6 +153,7 @@ class TestMultiProcessing(unittest.TestCase):
         process_queue.Stop_Processes()
         p.join()
         print('||Finished Test||')
+        mp_lock.release()
 
 if __name__ == '__main__':
     unittest.main()
