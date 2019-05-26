@@ -56,7 +56,7 @@ def complex_method():
     return True
 
 def simple_notify(process):
-    print(process)
+    print('process complete ' + process.id)
     return True
 
 class TestMultiProcessing(unittest.TestCase):
@@ -66,7 +66,7 @@ class TestMultiProcessing(unittest.TestCase):
         print('||Executing test queue single job||')
         id = uuid.uuid4()
         id_str = str(id)
-        simple_job = Process_Job(id, simple_method, simple_notify)
+        simple_job = Process_Job(id_str, simple_method, simple_notify)
         #now create process queue and verify the only job complete
         process_queue = Process_Queue()
         process_queue.Enqueue(simple_job)
@@ -86,8 +86,8 @@ class TestMultiProcessing(unittest.TestCase):
         id_str = str(id)
         id2 = uuid.uuid4()
         id_str_2 = str(id2)
-        simple_job = Process_Job(id, simple_method, simple_notify)
-        simple_job_2 = Process_Job(id2, simple_method, simple_notify)
+        simple_job = Process_Job(id_str, simple_method, simple_notify)
+        simple_job_2 = Process_Job(id_str_2, simple_method, simple_notify)
         #now create process queue and verify jobs complete
         process_queue = Process_Queue()
         process_queue.Enqueue(simple_job)
@@ -111,8 +111,8 @@ class TestMultiProcessing(unittest.TestCase):
         id_str = str(id)
         id2 = uuid.uuid4()
         id_str_2 = str(id2)
-        complex_job = Process_Job(id, complex_method, simple_notify)
-        complex_job_2 = Process_Job(id2, complex_method, simple_notify)
+        complex_job = Process_Job(id_str, complex_method, simple_notify)
+        complex_job_2 = Process_Job(id_str_2, complex_method, simple_notify)
         #now create process queue and verify jobs complete
         process_queue = Process_Queue()
         process_queue.Enqueue(complex_job)
@@ -136,8 +136,8 @@ class TestMultiProcessing(unittest.TestCase):
         id_str = str(id)
         id2 = uuid.uuid4()
         id_str_2 = str(id2)
-        complex_job = Process_Job(id, complex_method, simple_notify)
-        complex_job_2 = Process_Job(id2, complex_method, simple_notify)
+        complex_job = Process_Job(id_str, complex_method, simple_notify)
+        complex_job_2 = Process_Job(id_str_2, complex_method, simple_notify)
         #now create process queue and verify jobs complete
         process_queue = Process_Queue()
         print('Enqueue test queue jobs concurrent')
