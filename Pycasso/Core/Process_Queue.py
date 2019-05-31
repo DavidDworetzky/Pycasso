@@ -1,7 +1,8 @@
 import multiprocessing as mp
+import time
 #Multiprocessing job queue class
 class Process_Queue:
-    def __init__(self, Num_Process = 4, debug=True):
+    def __init__(self, Num_Process = 4, debug=True, proc_wait_time = 0.1):
         self.Num_Process = Num_Process
         self.Queue = mp.Queue()
         self.Processes = []
@@ -12,6 +13,7 @@ class Process_Queue:
         #Queue is running
         self.Running = False
         self.debug = debug
+        self.Process_Wait_Time = proc_wait_time
 
     #Enqueue a process item... Anything in queue is waiting to be processed
     def Enqueue(self, queue_item):
@@ -57,6 +59,8 @@ class Process_Queue:
                 self.Processes.append(process)
                 multi_p.start()
         #return if running turned off
+        #sleep so that we only execute the run look every 100 milliseconds
+        time.sleep(self.Process_Wait_Time)
         return
 
     #Starts our processing queue
