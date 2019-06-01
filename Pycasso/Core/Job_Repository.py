@@ -49,7 +49,7 @@ class Job_Repository:
         return job
     def terminate_job(self, job_id):
         Job = Query()
-        self.db.update(delete(job_id), Job.id == job_id)
+        self.db.update(terminate_job_tinydb(job_id), Job.id == job_id)
         return True
     def complete_job(self, job_id):
         Job = Query()
