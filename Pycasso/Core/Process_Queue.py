@@ -4,7 +4,10 @@ import time
 class Process_Queue:
     def __init__(self, Num_Process = 4, debug=True, proc_wait_time = 0.1):
         self.Num_Process = Num_Process
+        #Current Work Queue
         self.Queue = mp.Queue()
+        #Queue of finished work to communicate back to parent proc
+        self.Finished_Queue = mp.Queue()
         self.Processes = []
         #locking and synchronization primitives
         self.QueueLock = mp.Lock()
@@ -31,6 +34,9 @@ class Process_Queue:
         self.QueueLock.release()
         return result
 
+    def Get_Work_Result(self):
+        return self.Finished_Queue.get()
+
     #Core run processes loop
     def Run_Processes(self):
         if self.debug:
@@ -45,6 +51,8 @@ class Process_Queue:
                     #process has finished, mark as complete, and remove from self.Processes
                     process.completed = True
                     process.notify_complete(process)
+                    #add to finished work queue... but only the id and completed status
+                    self.Finished_Queue.put({'id': process.id, 'completed': process.completed})
                     #remove
                     self.ProcessesLock.acquire()
                     self.Processes = self.Remove_Process_After_Complete(process)
@@ -58,9 +66,9 @@ class Process_Queue:
                 process.process = multi_p
                 self.Processes.append(process)
                 multi_p.start()
+            #sleep so that we only execute the run look every 100 milliseconds
+            time.sleep(self.Process_Wait_Time)
         #return if running turned off
-        #sleep so that we only execute the run look every 100 milliseconds
-        time.sleep(self.Process_Wait_Time)
         return
 
     #Starts our processing queue
@@ -83,11 +91,15 @@ class Process_Queue:
         x_list = list([x for x in self.Processes if x.id != x_id])
         return x_list
     def Stop_Processes(self):
+        if self.debug:
+            print('||Stopping Processes||')
         self.RunningLock.acquire()
         self.Running = False
         self.RunningLock.release()
         for p in self.Processes:
             p.join()
+        if self.debug:
+            print('||Processes Stopped||')
         return
     
 #Process Job DTO for use in a process queue
@@ -98,5 +110,6 @@ class Process_Job:
         self.completed = False
         self.notify_complete = notify_complete
         self.process = process
+
 
     
