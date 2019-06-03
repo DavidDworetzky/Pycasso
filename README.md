@@ -22,6 +22,7 @@ If you wish to replace your own images, simply add images to the Data folder and
 5. pip3 install torchvision
 6. pip install flask_jwt_extended
 7. pip install requests
+8. pip install pytorch-pretrained-bert
 
 ## Roadmap
 View Projects, task list for current product roadmap. Next content features will probably include GANs for generating faces, character models, 3d models, as well as text generation with gpt2.
