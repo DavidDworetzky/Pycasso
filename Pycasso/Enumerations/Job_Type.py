@@ -4,3 +4,4 @@ class Job_Type(Enum):
      GAN = 2
      Deep_Dream = 3
      Model_GAN = 4
+     Text_Generator = 5

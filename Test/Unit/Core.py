@@ -9,6 +9,7 @@ import uuid
 import time
 import random
 import multiprocessing as mp
+from Pycasso.Core.Text_Generator import Text_Generator as TG
 
 #Fixtures
 mp_lock = mp.Lock()
@@ -154,6 +155,16 @@ class TestMultiProcessing(unittest.TestCase):
         process_queue.Stop_Processes()
         print('||Finished Test||')
         mp_lock.release()
+
+class Test_Text_Generation(unittest.TestCase):
+
+    def test_text_generation(self):
+        text_sequence = 'Pretty Polly the Parrot wants a cracker.'
+        tg = TG(text_sequence, 'GPT2')
+        result_text = tg.generate_text(1)
+        print(result_text)
+        self.assertTrue(len(result_text) > 0)
+
 
 if __name__ == '__main__':
     unittest.main()

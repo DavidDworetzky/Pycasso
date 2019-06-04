@@ -8,6 +8,7 @@ from Pycasso.Core.User_Repository import *
 from Pycasso.Core.Gpu_Device_Manager import *
 from Pycasso.Core.Neural_Transfer import Neural_Transfer as NT
 from Pycasso.Core.Password_Manager import Password_Manager as PM
+from Pycasso.Core.Text_Generator import Text_Generator as TG
 import datetime
 from PIL import Image
 from io import BytesIO
@@ -27,7 +28,7 @@ PASSWORD_SALT = "salt"
 
 #Static definitions
 API_VERSIONS = {
-    '0.1.2': '0.1.2'
+    '0.1.3': '0.1.3'
 }
 #get current directory for relative paths
 wd = os.getcwd()
@@ -187,6 +188,9 @@ class Job(Resource):
         Crop_Size = args['ImCrop']
         Source_Image = Process_Json_Arg(args['Source_Image'])
         Target_Image = Process_Json_Arg(args['Target_Image'])
+        #Now, get miscellaneous data used for non image job processing
+        Source_Data = Process_Json_Arg(args['Source_Data'])
+        Model_Type = Process_Json_Arg(args['Model_Type'])
         #now get our jwt_identity for recording jobs
         current_user = get_jwt_identity()
         user_repo = User_Repository(Users_Repo_Path)
@@ -205,6 +209,11 @@ class Job(Resource):
             return decoded, 200
         elif Converted_Type == JobType.GAN:
             return 'GAN Not Supported Yet', 400
+        elif Converted_Type == JobType.Text_Generator:
+            #Create Text_Generator based off of Source_Data
+            tg = TG(Source_Data, 'GPT2')
+            output = tg.generate_text(1)
+            return output, 200
         else:
             return 'Type Not Supported Yet', 400
 
