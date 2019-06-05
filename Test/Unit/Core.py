@@ -161,7 +161,7 @@ class Test_Text_Generation(unittest.TestCase):
     def test_text_generation(self):
         text_sequence = 'Pretty Polly the Parrot wants a cracker.'
         tg = TG(text_sequence, 'GPT2')
-        result_text = tg.generate_text(1)
+        result_text = tg.generate_text(100)
         print(result_text)
         self.assertTrue(len(result_text) > 0)
 
