@@ -212,3 +212,7 @@ class Neural_Transfer:
         image = image.squeeze(0)      # remove the fake batch dimension
         image = unloader(image)
         return image
+
+    #common alias for image job processor
+    def run_job(self, num_steps):
+        return self.run_transfer(num_steps)
