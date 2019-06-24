@@ -59,6 +59,9 @@ class Deep_Dream:
         input.transpose_(1,2)
         input = np.clip(self.Convert_To_Image(input), 0, 1)
         return Image.fromarray(np.uint8(input * 255))
+        #common alias for image job processor
+    def run_job(self, num_steps):
+        return self.deep_dream(num_steps)
 
 
         
