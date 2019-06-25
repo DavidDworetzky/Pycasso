@@ -3,9 +3,8 @@ from torchvision import models, transforms
 import numpy as np
 from PIL import Image, ImageFilter, ImageChops
 
-
 class Deep_Dream:
-    def __init__(self, image_size, content_image, num_iterations = 5, num_downscales = 20, blend_alpha = 0.6, lr = 0.2, debug=True):
+    def __init__(self, image_size, content_image, num_iterations = 5, num_downscales = 20, blend_alpha = 0.6, lr = 0.2, layer= 28 debug=True):
         self.debug = debug
         self.image_size = image_size
         self.content_image = content_image
@@ -14,6 +13,8 @@ class Deep_Dream:
         self.num_downscales = num_downscales
         self.blend_alpha = blend_alpha
         self.lr = lr
+        #layer through which we maximize activations
+        self.layer = layer
         #Cuda device
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = models.vgg16(pretrained = True)
@@ -35,12 +36,11 @@ class Deep_Dream:
             self.tensorStd = self.tensorStd.cuda()
         #make modules available from vgg16 model
         self.modules = list(self.model.features.modules())
-
     def Convert_To_Image(self, input):
         return input * self.tensorStd + self.tensorMean
     #runs the deep dream image transform on our input content_image
-    def deep_dream(self, num_steps, layer):
-        transform_image = self.transformPreprocess(self.content_image).unsqueeze(0)
+    def deep_dream(self, image, num_steps, layer):
+        transform_image = self.transformPreprocess(image).unsqueeze(0)
         if torch.cuda.is_available():
             transform_image = transform_image.cuda()
         input = torch.autograd.Variable(transform_image, requires_grad=True)
@@ -60,8 +60,28 @@ class Deep_Dream:
         input = np.clip(self.Convert_To_Image(input), 0, 1)
         return Image.fromarray(np.uint8(input * 255))
         #common alias for image job processor
+    def deep_dream_recursive(self, image, num_steps, layer, num_downscales):
+        if num_downscales > 0:
+            #scale down the image
+            image_small = image.filter(ImageFilter.GaussianBlur)
+            small_size = (int(image.size[0]/2), int(image.size[1]/2))
+            if (small_size[0] == 0 or small_size[1] == 0):
+                small_size = image.size
+            image_small = image_small.resize(small_size, Image.ANTIALIAS)
+
+            # run deep dream on the downscaled image
+            image_small = self.deep_dream_recursive(image, num_steps, layer, num_downscales - 1)
+
+            #scale the image back
+            image_large = image_small.resize(image.size, Image.ANTIALIAS)
+
+            # Blend the images
+            image = ImageChops.blend(image, image_large, self.blend_alpha)
+        image_result = self.deep_dream(image, num_steps, layer)
+        image_result = image_result.resize(image.size)
+        return image_result
     def run_job(self, num_steps):
-        return self.deep_dream(num_steps)
+        return self.deep_dream_recursive(self.content_image, self.num_iterations, self.layer, self.num_downscales)
 
 
         
