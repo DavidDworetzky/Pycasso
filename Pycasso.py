@@ -7,6 +7,7 @@ from Pycasso.Core.Job_Repository import *
 from Pycasso.Core.User_Repository import *
 from Pycasso.Core.Gpu_Device_Manager import *
 from Pycasso.Core.Neural_Transfer import Neural_Transfer as NT
+from Pycasso.Core.Neural_Transfer import Deep_Dream as DD
 from Pycasso.Core.Password_Manager import Password_Manager as PM
 from Pycasso.Core.Text_Generator import Text_Generator as TG
 import datetime
@@ -28,7 +29,7 @@ PASSWORD_SALT = "salt"
 
 #Static definitions
 API_VERSIONS = {
-    '0.1.6': '0.1.6'
+    '0.1.7': '0.1.7'
 }
 #get current directory for relative paths
 wd = os.getcwd()
@@ -206,6 +207,17 @@ class Job(Resource):
             output = Neural_Transfer.run_transfer(600)
             job_repo.complete_job(job_out['id'])
             output_str = Convert_Output_To_Base64(output)
+            decoded = output_str.decode('utf-8')
+            return decoded, 200
+        elif Converted_Type == JobType.Deep_Dream:
+            #Source Image is the Content Image
+            Job_Data = [Source_Image]
+            job_out = job_repo.queue_job({'name': 'Deep-Dream', 'create_date': Job_Start, 'data': Job_Data, 'user_id' : user['id']})
+            Deep_Dream = DD(Crop_Size, Source_Image)
+            #run a 25 cycle DeepDream to start before allowing this as a parameter
+            output = DD.run_job(25)
+            job_repo.complete_job(job_out['id'])
+            output_str = Convert_Output_To_base64(output)
             decoded = output_str.decode('utf-8')
             return decoded, 200
         elif Converted_Type == JobType.GAN:

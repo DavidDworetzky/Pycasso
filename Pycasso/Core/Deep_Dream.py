@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image, ImageFilter, ImageChops
 
 class Deep_Dream:
-    def __init__(self, image_size, content_image, num_iterations = 5, num_downscales = 20, blend_alpha = 0.6, lr = 0.2, layer= 28 debug=True):
+    def __init__(self, image_size, content_image, num_iterations = 5, num_downscales = 20, blend_alpha = 0.6, lr = 0.2, layer= 28, debug=True):
         self.debug = debug
         self.image_size = image_size
         self.content_image = content_image
