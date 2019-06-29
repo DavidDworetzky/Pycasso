@@ -63,7 +63,7 @@ def is_json(myjson):
     return False
   return True
 
-def queue_job(content_path, style_path, auth_token = None):
+def queue_style_job(content_path, style_path, auth_token = None):
     # Neural_Transfer = 1
     # GAN = 2
     # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize}
@@ -89,6 +89,28 @@ def queue_job(content_path, style_path, auth_token = None):
     response = requests.post(url, data=data, headers={'Authorization': f'Bearer {auth_token}'})
     #returns job id and image
     return response
+def queue_deep_dream_job(content_path, auth_token = None):
+    # Neural_Transfer = 1
+    # GAN = 2
+    # Deep_Dream = 3
+    # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize}
+    # Source Image is content
+    url = 'http://localhost:5000/job'
+    # get content image
+    with open(content_path, "rb") as image:
+        f = image.read()
+        b = bytearray(f)
+        content = base64.encodebytes(b)
+    job_type = 3
+    imcrop = 500
+    data = f'{{"Job_Type" : {job_type},"Source_Image" : "{content}","Target_Image" : "{style}","ImCrop" : {imcrop}}}'
+    is_valid_json = is_json(data)
+    print(f'data is json: {is_valid_json}')
+    print(f'posting data to {url} to queue job')
+    response = requests.post(url, data=data, headers={'Authorization': f'Bearer {auth_token}'})
+    #returns job id and image
+    return response
+
 
 def create_user(auth_token = None, admin = True):
   url = 'http://localhost:5000/adminuser' if admin else 'http://localhost:5000/user'
@@ -176,7 +198,7 @@ wd = os.getcwd()
 guitarist =  os.path.join(wd, "data\\guitarist.jpg")
 singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
 print('Queueing image job')
-output = queue_job(guitarist, singing_butler, auth_token= auth_token)
+output = queue_style_job(guitarist, singing_butler, auth_token= auth_token)
 print(f'status code of response is: {output.status_code}')
 print('output content')
 print(output.text)
