@@ -7,7 +7,7 @@ from Pycasso.Core.Job_Repository import *
 from Pycasso.Core.User_Repository import *
 from Pycasso.Core.Gpu_Device_Manager import *
 from Pycasso.Core.Neural_Transfer import Neural_Transfer as NT
-from Pycasso.Core.Neural_Transfer import Deep_Dream as DD
+from Pycasso.Core.Deep_Dream import Deep_Dream as DD
 from Pycasso.Core.Password_Manager import Password_Manager as PM
 from Pycasso.Core.Text_Generator import Text_Generator as TG
 import datetime

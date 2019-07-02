@@ -203,6 +203,16 @@ print(f'status code of response is: {output.status_code}')
 print('output content')
 print(output.text)
 
+#now queue deep dream job
+
+wd = os.getcwd()
+guitarist = os.path.join(wd, "data\\guitarist.jpg")
+print('Queueing deep dream job')
+output = queue_deep_dream_job(guitarist, auth_token = auth_token)
+print(f'status code of response is: {output.status_code}')
+print('output content')
+print(output.text)
+
 print('Making statuses call')
 statuses = -1
 statuses_output = make_statuses_call(statuses, auth_token= auth_token)
