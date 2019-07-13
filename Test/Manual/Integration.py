@@ -103,7 +103,7 @@ def queue_deep_dream_job(content_path, auth_token = None):
         content = base64.encodebytes(b)
     job_type = 3
     imcrop = 500
-    data = f'{{"Job_Type" : {job_type},"Source_Image" : "{content}","Target_Image" : "{style}","ImCrop" : {imcrop}}}'
+    data = f'{{"Job_Type" : {job_type},"Source_Image" : "{content}","ImCrop" : {imcrop}}}'
     is_valid_json = is_json(data)
     print(f'data is json: {is_valid_json}')
     print(f'posting data to {url} to queue job')

@@ -29,14 +29,17 @@ PASSWORD_SALT = "salt"
 
 #Static definitions
 API_VERSIONS = {
-    '0.1.7': '0.1.7'
+    '0.1.8': '0.1.8'
 }
 #get current directory for relative paths
 wd = os.getcwd()
 
 def Process_Json_Arg(string):
+    if string is not '':
     #Removes leading b on string
-    return string[1:]
+        return string[1:]
+    else: 
+        return ''
 #converts a PIL image to base 64
 def Convert_Output_To_Base64(image_output):
     buffered = BytesIO()
@@ -182,17 +185,20 @@ class Job(Resource):
         job_repo = Job_Repository(Repo_Path)
         args = request.get_json(force=True)
         # job definition sample:
-        # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize}
+        # {Type : Job_Type, Source_Image: Base64Image, Target_Image : Base64Image, ImCrop : CropSize, Source_Data: 'Data Sequence'}
         #variable initialization
+
+        #OPTIONAL PARAMS
+        Crop_Size = args['ImCrop'] if 'ImCrop' in args else 0
+        Source_Image = Process_Json_Arg(args['Source_Image']) if 'Source_Image' in args else ''
+        Target_Image = Process_Json_Arg(args['Target_Image']) if 'Target_Image' in args else ''
+        #Now, get miscellaneous data used for non image job processing. (Aka GPT2 and other asset generators)
+        Source_Data = Process_Json_Arg(args['Source_Data']) if 'Source_Data' in args  else ''
+        Model_Type = Process_Json_Arg(args['Model_Type']) if 'Model_Type' in args else ''
+        Sequence_Size = Process_Json_Arg(args['Sequence_Size']) if 'Sequence_Size' in args else ''
+        #REQUIRED PARAMS
         Converted_Type = JobType(args['Job_Type'])
         Job_Start = datetime.datetime.now()
-        Crop_Size = args['ImCrop']
-        Source_Image = Process_Json_Arg(args['Source_Image'])
-        Target_Image = Process_Json_Arg(args['Target_Image'])
-        #Now, get miscellaneous data used for non image job processing
-        Source_Data = Process_Json_Arg(args['Source_Data'])
-        Model_Type = Process_Json_Arg(args['Model_Type'])
-        Sequence_Size = Process_Json_Arg(args['Sequence_Size'])
         #now get our jwt_identity for recording jobs
         current_user = get_jwt_identity()
         user_repo = User_Repository(Users_Repo_Path)
