@@ -29,7 +29,7 @@ PASSWORD_SALT = "salt"
 
 #Static definitions
 API_VERSIONS = {
-    '0.1.8': '0.1.8'
+    '0.1.9': '0.1.9'
 }
 #get current directory for relative paths
 wd = os.getcwd()
@@ -221,7 +221,7 @@ class Job(Resource):
             job_out = job_repo.queue_job({'name': 'Deep-Dream', 'create_date': Job_Start, 'data': Job_Data, 'user_id' : user['id']})
             Deep_Dream = DD(Crop_Size, Source_Image)
             #run a 25 cycle DeepDream to start before allowing this as a parameter
-            output = DD.run_job(25)
+            output = Deep_Dream.run_job(25)
             job_repo.complete_job(job_out['id'])
             output_str = Convert_Output_To_base64(output)
             decoded = output_str.decode('utf-8')

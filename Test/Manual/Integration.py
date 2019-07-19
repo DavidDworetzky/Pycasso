@@ -5,6 +5,9 @@ import json
 from datetime import datetime
 
 default_format = '%Y-%m-%d %H:%M:%S'
+#refactor these later into a command prompt
+run_style_transfer = True
+run_deep_dream = True
 
 #Status response data object
 class Status_Response:
@@ -193,25 +196,25 @@ print('users are:')
 print(users_output.text)
 
 #now queue jobs 
-
-wd = os.getcwd()
-guitarist =  os.path.join(wd, "data\\guitarist.jpg")
-singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
-print('Queueing image job')
-output = queue_style_job(guitarist, singing_butler, auth_token= auth_token)
-print(f'status code of response is: {output.status_code}')
-print('output content')
-print(output.text)
+if run_style_transfer:
+  wd = os.getcwd()
+  guitarist =  os.path.join(wd, "data\\guitarist.jpg")
+  singing_butler = os.path.join(wd, "data\\singingbutler.jpg")
+  print('Queueing image job')
+  output = queue_style_job(guitarist, singing_butler, auth_token= auth_token)
+  print(f'status code of response is: {output.status_code}')
+  print('output content')
+  print(output.text)
 
 #now queue deep dream job
-
-wd = os.getcwd()
-guitarist = os.path.join(wd, "data\\guitarist.jpg")
-print('Queueing deep dream job')
-output = queue_deep_dream_job(guitarist, auth_token = auth_token)
-print(f'status code of response is: {output.status_code}')
-print('output content')
-print(output.text)
+if run_deep_dream:
+  wd = os.getcwd()
+  guitarist = os.path.join(wd, "data\\guitarist.jpg")
+  print('Queueing deep dream job')
+  output = queue_deep_dream_job(guitarist, auth_token = auth_token)
+  print(f'status code of response is: {output.status_code}')
+  print('output content')
+  print(output.text)
 
 print('Making statuses call')
 statuses = -1
