@@ -3,6 +3,23 @@ from torchvision import models, transforms
 import numpy as np
 from PIL import Image, ImageFilter, ImageChops
 
+#Helper functions for image processing -> loading
+#TODO refactor this for various image processing deep learning processes into one class
+def image_loader(image_data, loader, device, debug=True):
+    decoded = base64.b64decode(image_data)
+    #create temp file for processing
+    temp_name = str(uuid.uuid4())
+    #if debug flag, write out image to directory
+    if(debug):
+        with open(f"{temp_name}.jpg", 'wb') as f:
+            f.write(decoded)
+    b = BytesIO(decoded)
+    b.seek(0)
+    image = Image.open(b)
+    # fake batch dimension required to fit network's input dimensions
+    image = loader(image).unsqueeze(0)
+    return image.to(device, torch.float)
+
 class Deep_Dream:
     def __init__(self, image_size, content_image, num_iterations = 5, num_downscales = 20, blend_alpha = 0.6, lr = 0.2, layer= 28, debug=True):
         self.debug = debug
@@ -81,6 +98,8 @@ class Deep_Dream:
         image_result = image_result.resize(image.size)
         return image_result
     def run_job(self, num_steps):
+        #load image with loader helper
+        loaded_image = image_loader(self.content_image, self.loader, self.device)
         return self.deep_dream_recursive(self.content_image, self.num_iterations, self.layer, self.num_downscales)
 
 
