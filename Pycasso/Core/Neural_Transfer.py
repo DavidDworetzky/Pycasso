@@ -16,6 +16,7 @@ content_layers_default = ['conv_4']
 style_layers_default = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
 
 #Helper functions for image processing -> loading
+#TODO refactor this for various image processing deep learning processes into one class
 def image_loader(image_data, loader, device, debug=True):
     decoded = base64.b64decode(image_data)
     #create temp file for processing

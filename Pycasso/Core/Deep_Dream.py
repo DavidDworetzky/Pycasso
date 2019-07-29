@@ -63,7 +63,7 @@ class Deep_Dream:
     def deep_dream_recursive(self, image, num_steps, layer, num_downscales):
         if num_downscales > 0:
             #scale down the image
-            image_small = image.filter(ImageFilter.GaussianBlur)
+            image_small = image.filter(ImageFilter.GaussianBlur(2))
             small_size = (int(image.size[0]/2), int(image.size[1]/2))
             if (small_size[0] == 0 or small_size[1] == 0):
                 small_size = image.size
