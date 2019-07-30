@@ -2,6 +2,9 @@ import torch
 from torchvision import models, transforms
 import numpy as np
 from PIL import Image, ImageFilter, ImageChops
+import uuid
+from io import BytesIO
+import base64
 
 #Helper functions for image processing -> loading
 #TODO refactor this for various image processing deep learning processes into one class
