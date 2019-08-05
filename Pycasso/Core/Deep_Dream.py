@@ -25,6 +25,8 @@ def image_loader(image_data, loader, device, debug=True):
 
 class Deep_Dream:
     def __init__(self, image_size, content_image, num_iterations = 5, num_downscales = 20, blend_alpha = 0.6, lr = 0.2, layer= 28, debug=True):
+        # scale imported image and transform it into a torch tensor
+        self.loader = transforms.Compose([transforms.Resize((self.image_size, self.image_size)), transforms.ToTensor()])
         self.debug = debug
         self.image_size = image_size
         self.content_image = content_image
@@ -103,7 +105,7 @@ class Deep_Dream:
     def run_job(self, num_steps):
         #load image with loader helper
         loaded_image = image_loader(self.content_image, self.loader, self.device)
-        return self.deep_dream_recursive(self.content_image, self.num_iterations, self.layer, self.num_downscales)
+        return self.deep_dream_recursive(loaded_image, self.num_iterations, self.layer, self.num_downscales)
 
 
         
