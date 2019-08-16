@@ -6,7 +6,7 @@ from datetime import datetime
 
 default_format = '%Y-%m-%d %H:%M:%S'
 #refactor these later into a command prompt
-run_style_transfer = True
+run_style_transfer = False
 run_deep_dream = True
 
 #Status response data object

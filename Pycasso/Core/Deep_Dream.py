@@ -42,7 +42,7 @@ class Deep_Dream:
         self.model = models.vgg16(pretrained = True)
         #if cuda is available
         if torch.cuda.is_available():
-            model = model.cuda()
+            self.model = self.model.cuda()
         # vgg16 uses 224 as the image dimension
         imSize = 224
         transformMean = [0.485, 0.456, 0.406]
