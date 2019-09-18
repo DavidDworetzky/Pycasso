@@ -19,14 +19,17 @@ def image_loader(image_data, loader, device, debug=True):
     b = BytesIO(decoded)
     b.seek(0)
     image = Image.open(b)
-    # fake batch dimension required to fit network's input dimensions
-    image = loader(image).unsqueeze(0)
-    return image.to(device, torch.float)
+    if self.loader is not None:
+        # fake batch dimension required to fit network's input dimensions
+        image = loader(image).unsqueeze(0)
+        return image.to(device, torch.float)
+    else:
+        return image
 
 class Deep_Dream:
     def __init__(self, image_size, content_image, num_iterations = 5, num_downscales = 20, blend_alpha = 0.6, lr = 0.2, layer= 28, debug=True):
         # scale imported image and transform it into a torch tensor
-        self.loader = transforms.Compose([transforms.Resize((image_size, image_size)), transforms.ToTensor()])
+        self.loader = None # transforms.Compose([transforms.Resize((image_size, image_size)), transforms.ToTensor()])
         self.debug = debug
         self.image_size = image_size
         self.content_image = content_image
