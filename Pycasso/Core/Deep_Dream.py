@@ -19,7 +19,7 @@ def image_loader(image_data, loader, device, debug=True):
     b = BytesIO(decoded)
     b.seek(0)
     image = Image.open(b)
-    if self.loader is not None:
+    if loader is not None:
         # fake batch dimension required to fit network's input dimensions
         image = loader(image).unsqueeze(0)
         return image.to(device, torch.float)
