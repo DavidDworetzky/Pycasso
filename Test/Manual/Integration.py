@@ -66,6 +66,16 @@ def is_json(myjson):
     return False
   return True
 
+def validate_input_files(files):
+  print('Validating files for integration script')
+  wd = os.getcwd()
+  for file in files:
+    filePath = os.path.join(wd, file)
+    print(filePath)
+    if not os.path.exists(filePath):
+      raise Exception(f'Input file does not exist: {filePath}')
+  print('Paths validated')
+
 def queue_style_job(content_path, style_path, auth_token = None):
     # Neural_Transfer = 1
     # GAN = 2
@@ -147,6 +157,8 @@ def get_users(user_id, auth_token = None):
   response = requests.get(url, headers={'Authorization': f'Bearer {auth_token}'})
   return response
 
+#validations of script pre-reqs
+validate_input_files(["data\\guitarist.jpg", "data\\singingbutler.jpg"])
 #version call
 print('Making version call')
 version = make_version_call()

@@ -82,7 +82,7 @@ class Deep_Dream:
         input = input.data.squeeze()
         input.transpose_(0,1)
         input.transpose_(1,2)
-        input = np.clip(self.Convert_To_Image(input), 0, 1)
+        # input = np.clip(self.Convert_To_Image(input), 0, 1)
         return Image.fromarray(np.uint8(input * 255))
         #common alias for image job processor
     def deep_dream_recursive(self, image, num_steps, layer, num_downscales):
