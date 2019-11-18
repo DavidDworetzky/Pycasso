@@ -223,7 +223,7 @@ class Job(Resource):
             #run a 25 cycle DeepDream to start before allowing this as a parameter
             output = Deep_Dream.run_job(25)
             job_repo.complete_job(job_out['id'])
-            output_str = Convert_Output_To_base64(output)
+            output_str = Convert_Output_To_Base64(output)
             decoded = output_str.decode('utf-8')
             return decoded, 200
         elif Converted_Type == JobType.GAN:
